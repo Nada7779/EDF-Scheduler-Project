@@ -82,6 +82,15 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelay				1
 
 
+/**********************************Trace Macros*****************************************/
+
+#define traceTASK_SWITCHED_IN() GPIO_write(PORT_0,(int)pxCurrentTCB->pxTaskTag,PIN_IS_HIGH)
+
+#define traceTASK_SWITCHED_OUT() GPIO_write(PORT_0,(int)pxCurrentTCB->pxTaskTag,PIN_IS_LOW)
+
+/*****************************************************************************/
+
+
 //#define traceTASK_SWITCHED_IN() GPIO_write(PORT_0,(int)pxCurrentTCB->,PIN_IS_HIGH)
 
 

@@ -140,17 +140,18 @@ static void prvSetupHardware( void );
 void Button_1_Monitor (void * pvParameters)
 {
 	/* local variables */
+
 	uint8_t lc_u8_button_pressed=RELEASED;
 
 	pinState_t lc_u8_button_state;
 	
 	const char* lc_ptr_ch_button_1_rising= "Button_1_RISING \n";
 	const char* lc_ptr_ch_button_1_falling= "Button_1_FALLING\n";
-	
+		
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = BTN1_PRIODICITY;
 	
-	//vTaskSetApplicationTaskTag( NULL, (void*) PIN2);
+//vTaskSetApplicationTaskTag( NULL, (void*) PIN8);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
@@ -158,7 +159,7 @@ void Button_1_Monitor (void * pvParameters)
 	for( ;; )
 	{
 /* Task Code*/
-		GPIO_write(PORT_0,PIN7,PIN_IS_HIGH);
+		//GPIO_write(PORT_0,PIN7,PIN_IS_HIGH);
 		lc_u8_button_state= GPIO_read(BUTTON_1_PORT, BUTTON_1_PIN);
 				if (lc_u8_button_state == PIN_IS_HIGH && lc_u8_button_pressed==RELEASED )
 				{ 
@@ -174,13 +175,15 @@ void Button_1_Monitor (void * pvParameters)
 				}				
 		//vTaskDelay(READ_BUTTON_DELAY);	
 				vTaskDelayUntil(&xLastWakeTime, xFrequency);
-						GPIO_write(PORT_0,PIN7,PIN_IS_LOW);
+					//	GPIO_write(PORT_0,PIN7,PIN_IS_LOW);
 
 	}
 }
 /* BUTTON_2_TASK  to detect the button 1 on (port 0 pin1) rising and falling edges  Every edge is an event that will be sent to a consumer_task */
 void Button_2_Monitor (void * pvParameters)
 {
+	
+	
 	/* local variables */
 	uint8_t lc_u8_button_pressed=RELEASED;
 
@@ -191,8 +194,8 @@ void Button_2_Monitor (void * pvParameters)
 	
 		TickType_t xLastWakeTime;
 	const TickType_t xFrequency = BTN2_PRIODICITY;
-	
-	//vTaskSetApplicationTaskTag( NULL, (void*) PIN2);
+	//	vTaskSetApplicationTaskTag( NULL, (void*) PIN9);
+
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
@@ -221,12 +224,13 @@ void Button_2_Monitor (void * pvParameters)
 /* This task will send a periodic string  every 100ms to the consumer task */
 void Periodic_Transmitter (void * pvParameters)
 {	
+	
 		const char* lc_ptr_ch_send_string= "periodic string \n";
 	
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = TR_PRIODICITY;
+//	vTaskSetApplicationTaskTag( NULL, (void*) PIN6);
 	
-	//vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
@@ -243,18 +247,19 @@ void Periodic_Transmitter (void * pvParameters)
 /* This task will send the strings recieved from buttons and send tasks to the uart */
 void Uart_Receiver (void * pvParameters)
 {	
+	
 	const char* lc_ptr_ch_receive_string;
 			
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = UART_PRIODICITY;
-	
+//	vTaskSetApplicationTaskTag( NULL, (void*) PIN7);
 	
 	//vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
 	
-	//vTaskSetApplicationTaskTag( NULL, (void*) PIN2);
+	
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
@@ -272,23 +277,25 @@ void Uart_Receiver (void * pvParameters)
 /* this task to create empty loop that loops X times to be with Execution time= 5ms*/
 void Load_1_Simulation (void * pvParameters)
 {	
+	
 	 int i=0; 
+
 		TickType_t xLastWakeTime;
 	const TickType_t xFrequency = LOAD1_PRIODICITY;
+	//	vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
 	
 	
-	//vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
 	for( ;; )
 	{  
-		GPIO_write(PORT_0, PIN3,PIN_IS_HIGH);
+	//	GPIO_write(PORT_0, PIN3,PIN_IS_HIGH);
 		for (i=0;i<37500;i++)
 		{
-			;
+			i=1;
 		}
-				GPIO_write(PORT_0, PIN3,PIN_IS_LOW);
+			//	GPIO_write(PORT_0, PIN3,PIN_IS_LOW);
 
 		
 						vTaskDelayUntil(&xLastWakeTime, xFrequency);
@@ -300,30 +307,32 @@ void Load_1_Simulation (void * pvParameters)
 /* this task to create empty loop that loops X times to be with Execution time= 12ms */
 void Load_2_Simulation (void * pvParameters)
 {	
+	
 	 int i=0; 
+
 		TickType_t xLastWakeTime;
 	const TickType_t xFrequency = LOAD2_PRIODICITY;
+		//vTaskSetApplicationTaskTag( NULL, (void*) PIN2);
 	
 	
-	//vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
 	for( ;; )
-	{   	GPIO_write(PORT_0, PIN2,PIN_IS_HIGH);
+	{   	//GPIO_write(PORT_0, PIN2,PIN_IS_HIGH);
   
 		for (i=0;i<90000;i++)
 		{
-			;
+			i=1;
 		}
-			GPIO_write(PORT_0, PIN2,PIN_IS_LOW);
+			//GPIO_write(PORT_0, PIN2,PIN_IS_LOW);
 
 			vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
 		
 		  /* Indicate Idle Task stop*/
 
-	GPIO_write(PORT_0,PIN4,PIN_IS_LOW);
+	//GPIO_write(PORT_0,PIN4,PIN_IS_LOW);
 
 	}
 }
@@ -341,10 +350,15 @@ void vApplicationTickHook (void)
 /* Application idle hook callout */
 void vApplicationIdleHook (void)
 {
+	static uint8_t S_U8_LV_TagInit=0;
+	
+	if(S_U8_LV_TagInit	==	0)
+	{
+		vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
+		S_U8_LV_TagInit=1;
+	}
 
   /* Indicate Idle Task start*/
-	
-	GPIO_write(PORT_0,PIN4,PIN_IS_HIGH);
 
 	}
 	
