@@ -254,7 +254,7 @@ void Uart_Receiver (void * pvParameters)
 	const TickType_t xFrequency = UART_PRIODICITY;
 //	vTaskSetApplicationTaskTag( NULL, (void*) PIN7);
 	
-	//vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
+	vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
@@ -354,7 +354,7 @@ void vApplicationIdleHook (void)
 	
 	if(S_U8_LV_TagInit	==	0)
 	{
-		vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
+		vTaskSetApplicationTaskTag( NULL, (void*) PIN4);
 		S_U8_LV_TagInit=1;
 	}
 
