@@ -279,17 +279,17 @@ void Load_1_Simulation (void * pvParameters)
 	xLastWakeTime = xTaskGetTickCount();
 	for( ;; )
 	{  
-		GPIO_write(PORT_0, PIN3,PIN_IS_HIGH);
+		//GPIO_write(PORT_0, PIN3,PIN_IS_HIGH);
 		for (i=0;i<37500;i++)
 		{
 			;
 		}
-				GPIO_write(PORT_0, PIN3,PIN_IS_LOW);
+			
 
-		
+	//	GPIO_write(PORT_0, PIN3,PIN_IS_LOW);
 						vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
-		
+			
 
 	}
 }
@@ -306,20 +306,20 @@ void Load_2_Simulation (void * pvParameters)
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
 	for( ;; )
-	{   	GPIO_write(PORT_0, PIN2,PIN_IS_HIGH);
+	{   //	GPIO_write(PORT_0, PIN2,PIN_IS_HIGH);
   
 		for (i=0;i<90000;i++)
 		{
 			;
 		}
-			GPIO_write(PORT_0, PIN2,PIN_IS_LOW);
+		//	GPIO_write(PORT_0, PIN2,PIN_IS_LOW);
 
 			vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
 		
 		  /* Indicate Idle Task stop*/
 
-	GPIO_write(PORT_0,PIN4,PIN_IS_LOW);
+//	GPIO_write(PORT_0,PIN4,PIN_IS_LOW);
 
 	}
 }
