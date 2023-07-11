@@ -324,7 +324,7 @@ void Load_2_Simulation (void * pvParameters)
 		
 		  /* Indicate Idle Task stop*/
 
-	//GPIO_write(PORT_0,PIN4,PIN_IS_LOW);
+	GPIO_write(PORT_0,PIN4,PIN_IS_LOW);
 
 	}
 }
