@@ -100,7 +100,18 @@ int main( void )
 	prvSetupHardware();
 	
 	
-	
+	/*For Kareem & nada*/
+	/*How to create a periodic Task*/
+	xTaskPeriodicCreate 
+	(
+	TSK_A,     	                     /*Function that implements the task*/
+	"TSK_A",                          /*Text name for the task*/
+	configMINIMAL_STACK_SIZE,            /*Stack size in the words not bytes*/
+	(void*)NULL,                          /*parameters that passed into the task*/
+	1,                                   /*priority at which the task is created*/
+	&TSK_A_Handler,	                 /*used to pass out the created task's handle*/
+	10															/*used to pass task periodicit*/
+	);
 								
 	/* Now all the tasks have been started - start the scheduler.
 
