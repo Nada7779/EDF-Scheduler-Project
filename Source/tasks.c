@@ -2867,15 +2867,15 @@ BaseType_t xSwitchRequired = pdFALSE;
 					{
 						/************************************************EDF Step 10*************************************************************/
 						#if ( configUSE_EDF_SCHEDULER == 1 )
-						if( pxTCB->xTaskPeriod  <= pxCurrentTCB->xTaskPeriod)
-						{
-							xSwitchRequired = pdTRUE;
-						}
-						else
-						{
-							mtCOVERAGE_TEST_MARKER();
-						}
-					
+										if (listGET_LIST_ITEM_VALUE(&((pxTCB)->xStateListItem)) <= listGET_LIST_ITEM_VALUE(&((pxCurrentTCB)->xStateListItem)))
+                    {
+
+                        xSwitchRequired = pdTRUE;
+                    }
+                    else
+                    {
+                        mtCOVERAGE_TEST_MARKER();
+                    }
 						#else
 						/* Preemption is on, but a context switch should
 						only be performed if the unblocked task has a
