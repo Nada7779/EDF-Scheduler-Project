@@ -2620,7 +2620,6 @@ TCB_t *pxTCB;
 			}
 		}
 		( void ) xTaskResumeAll();
-
 		return uxTask;
 	}
 
