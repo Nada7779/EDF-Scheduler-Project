@@ -83,6 +83,12 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelay				1
 
 
+#define configUSE_STATS_FORMATTING_FUNCTIONS  1
+#define configGENERATE_RUN_TIME_STATS  1
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()  
+#define portGET_RUN_TIME_COUNTER_VALUE() (T1TC)
+
+
 /**********************************Trace Macros*****************************************/
 
 //#define traceTASK_SWITCHED_IN() GPIO_write(PORT_0,(int)pxCurrentTCB->pxTaskTag,PIN_IS_HIGH)

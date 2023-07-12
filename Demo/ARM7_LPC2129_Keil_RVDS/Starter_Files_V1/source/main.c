@@ -93,7 +93,11 @@ TaskHandle_t Load_2_Simulation_Handler = NULL;
 #define LOAD1_PRIODICITY    10  
 #define LOAD2_PRIODICITY    100
 
+#define ENABLE_DEPUG_FEATURE  	1
 
+#define DISABLE_DEPUG_FEATURE		0
+
+#define PRINT_TASK_STATUS_SUMMERY  DISABLE_DEPUG_FEATURE
 
 
 /* Semaphore object */
@@ -146,7 +150,7 @@ static void prvSetupHardware( void );
 #define LOAD2_TAG   PIN7
 #define TICK_TAG    PIN8
 #define IDLE_TAG    PIN9
-
+#define Buffer_Size		150
 
 /* TaskS to be created */
 
@@ -161,6 +165,8 @@ static void prvSetupHardware( void );
  int T6_In_Time , T6_Out_Time , T6_Total_Time ,T6_Execution_Time;
 int currentTickSystem = 0 ;
 int CPU_LOAD = 0 ;
+
+char chArr_g_buffer[Buffer_Size]={0};
 /**********************************************/
 
 /* BUTTON_1_TASK  to detect the button 1 on (port 0 pin0) rising and falling edges  Every edge is an event that will be sent to a consumer_task */
@@ -270,8 +276,10 @@ void Periodic_Transmitter (void * pvParameters)
 
 		//vTaskDelay(SEND_DELAY);
 		vTaskDelayUntil(&xLastWakeTime, xFrequency);
-
 	}
+	
+	
+	
 }
 /* This task will send the strings recieved from buttons and send tasks to the uart */
 void Uart_Receiver (void * pvParameters)
@@ -298,7 +306,8 @@ void Uart_Receiver (void * pvParameters)
 		
 		if (xQueueReceive(gl_queue_handle,&lc_ptr_ch_receive_string,0) == pdPASS )
 
-		{vSerialPutString((const signed char*)lc_ptr_ch_receive_string,STRING_SIZE);}
+		{
+		vSerialPutString((const signed char*)lc_ptr_ch_receive_string,STRING_SIZE);}
 		
 				vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
@@ -324,6 +333,7 @@ void Load_1_Simulation (void * pvParameters)
 		{
 			;
 		}
+		
 
 			vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
@@ -353,6 +363,15 @@ void Load_2_Simulation (void * pvParameters)
 		{
 			;
 		}
+		
+		#if (PRINT_TASK_STATUS_SUMMERY==ENABLE_DEPUG_FEATURE)
+		
+  	vTaskGetRunTimeStats(chArr_g_buffer);
+	
+	  vSerialPutString((const signed char*)chArr_g_buffer,150);
+	
+	  xSerialPutChar('\n');
+	#endif
 
 			vTaskDelayUntil(&xLastWakeTime, xFrequency);
 	}
