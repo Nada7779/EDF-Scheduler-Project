@@ -268,6 +268,11 @@ typedef struct tskTaskControlBlock {			/* The old naming convention is used to p
 	StackType_t			*pxStack;			/*< Points to the start of the stack. */
 	char				pcTaskName[ configMAX_TASK_NAME_LEN ];/*< Descriptive name given to the task when created.  Facilitates debugging only. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 	
+	#if ( configUSE_EDF_SCHEDULER == 1 )
+ TickType_t xTaskPeriod; /*< Stores the period in tick of the task. > */
+ 
+//ListItem_t  xGenericListItem;
+ #endif
 	
 	#if ( ( portSTACK_GROWTH > 0 ) || ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
 		StackType_t		*pxEndOfStack;		/*< Points to the highest valid address for the stack. */
@@ -333,11 +338,7 @@ typedef struct tskTaskControlBlock {			/* The old naming convention is used to p
 	#endif
 /*EDF*/
 /* E.C. : the period of a task */
- #if ( configUSE_EDF_SCHEDULER == 1 )
- TickType_t xTaskPeriod; /*< Stores the period in tick of the task. > */
- 
-//ListItem_t  xGenericListItem;
- #endif
+
 
 }tskTCB;
 
@@ -353,6 +354,11 @@ PRIVILEGED_DATA TCB_t * volatile pxCurrentTCB = NULL;
 xDelayedTaskList1 and xDelayedTaskList2 could be move to function scople but
 doing so breaks some kernel aware debuggers and debuggers that rely on removing
 the static qualifier. */
+/*EDF*/
+#if ( configUSE_EDF_SCHEDULER == 1 )
+ PRIVILEGED_DATA static List_t xReadyTasksListEDF; /*< Ready tasks ordered by their deadline. */
+ #endif
+
 PRIVILEGED_DATA static List_t pxReadyTasksLists[ configMAX_PRIORITIES ];/*< Prioritised ready tasks. */
 PRIVILEGED_DATA static List_t xDelayedTaskList1;						/*< Delayed tasks. */
 PRIVILEGED_DATA static List_t xDelayedTaskList2;						/*< Delayed tasks (two lists are used - one for delays that have overflowed the current tick count. */
@@ -361,10 +367,7 @@ PRIVILEGED_DATA static List_t * volatile pxOverflowDelayedTaskList;		/*< Points 
 PRIVILEGED_DATA static List_t xPendingReadyList;						/*< Tasks that have been readied while the scheduler was suspended.  They will be moved to the ready list when the scheduler is resumed. */
 
 
-/*EDF*/
-#if ( configUSE_EDF_SCHEDULER == 1 )
- PRIVILEGED_DATA static List_t xReadyTasksListEDF; /*< Ready tasks ordered by their deadline. */
- #endif
+
  
 #if( INCLUDE_vTaskDelete == 1 )
 
@@ -2046,13 +2049,13 @@ BaseType_t xReturn;
 	#if (configUSE_EDF_SCHEDULER == 1)
  
  TickType_t initIDLEPeriod = 200;
- xReturn = xTaskPeriodicCreate(	prvIdleTask,
-								configIDLE_TASK_NAME,
-								configMINIMAL_STACK_SIZE,
-								( void * ) NULL,
-								portPRIVILEGE_BIT, /* In effect ( tskIDLE_PRIORITY | portPRIVILEGE_BIT ), but tskIDLE_PRIORITY is zero. */
-								&xIdleTaskHandle,
-								initIDLEPeriod);
+ xReturn = xTaskPeriodicCreate( prvIdleTask, 
+																		configIDLE_TASK_NAME, 
+																		configMINIMAL_STACK_SIZE, 
+																		(	void * ) NULL, 
+																		( tskIDLE_PRIORITY | portPRIVILEGE_BIT ), 
+																		&xIdleTaskHandle, 
+																		initIDLEPeriod );
  
  #else
 		/* The Idle task is being created using dynamically allocated RAM. */
@@ -2842,7 +2845,8 @@ BaseType_t xSwitchRequired = pdFALSE;
 					
 					#if ( configUSE_EDF_SCHEDULER == 1 )
           listSET_LIST_ITEM_VALUE( &( ( pxTCB )->xStateListItem  ), ( pxTCB)->xTaskPeriod + xTickCount);
-					listSET_LIST_ITEM_VALUE( &( ( xIdleTaskHandle )->xStateListItem  ), ( xIdleTaskHandle)->xTaskPeriod + xTickCount);
+					
+					//listSET_LIST_ITEM_VALUE( &( ( xIdleTaskHandle )->xStateListItem  ), ( xIdleTaskHandle)->xTaskPeriod + xTickCount);
 					#endif
 					
 					/* Place the unblocked task into the appropriate ready
@@ -2854,7 +2858,7 @@ BaseType_t xSwitchRequired = pdFALSE;
 					#if (  configUSE_PREEMPTION == 1 )
 					{
 						#if ( configUSE_EDF_SCHEDULER == 1 )
-						if( 1)
+						if( pxTCB->xTaskPeriod  <= pxCurrentTCB->xTaskPeriod)
 						{
 							xSwitchRequired = pdTRUE;
 						}
@@ -3111,14 +3115,14 @@ void vTaskSwitchContext( void )
 			 {
 			/* Select a new task to run using either the generic C or portoptimised asm code. */
 		   taskSELECT_HIGHEST_PRIORITY_TASK(); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
-		   traceTASK_SWITCHED_IN();
+		   
 			 }
 			 #else
 			{
 			 pxCurrentTCB = (TCB_t * ) listGET_OWNER_OF_HEAD_ENTRY( &(xReadyTasksListEDF ) );
 			}
 			 #endif
-
+		traceTASK_SWITCHED_IN();
 		
 
 		/* After the new task is switched in, update the global errno. */
@@ -3500,23 +3504,63 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
 
 		#if ( ( configUSE_PREEMPTION == 1 ) && ( configIDLE_SHOULD_YIELD == 1 ) )
 		{
-			/* When using preemption tasks of equal priority will be
-			timesliced.  If a task that is sharing the idle priority is ready
-			to run then the idle task should yield before the end of the
-			timeslice.
-
-			A critical region is not required here as we are just reading from
-			the list, and an occasional incorrect value will not matter.  If
-			the ready list at the idle priority contains more than one task
-			then a task other than the idle task is ready to execute. */
-			if( listCURRENT_LIST_LENGTH( &( pxReadyTasksLists[ tskIDLE_PRIORITY ] ) ) > ( UBaseType_t ) 1 )
+			#if ( configUSE_EDF_SCHEDULER == 0 )
 			{
+				/* When using preemption tasks of equal priority will be
+				timesliced.  If a task that is sharing the idle priority is ready
+				to run then the idle task should yield before the end of the
+				timeslice.
+
+				A critical region is not required here as we are just reading from
+				the list, and an occasional incorrect value will not matter.  If
+				the ready list at the idle priority contains more than one task
+				then a task other than the idle task is ready to execute. */
+				if( listCURRENT_LIST_LENGTH( &( pxReadyTasksLists[ tskIDLE_PRIORITY ] ) ) > ( UBaseType_t ) 1 )
+				{
+					taskYIELD();
+				}
+				else
+				{
+					mtCOVERAGE_TEST_MARKER();
+				}
+			}
+			#else
+			{
+				/* Get address of the ReadyList */
+				List_t *pxList = &(xReadyTasksListEDF);
+				ListItem_t *pxIterator = listGET_HEAD_ENTRY(pxList);
+				
+				/* Add variables to add be used */
+				UBaseType_t listCounter = 0;
+				UBaseType_t index = 0;
+				
+				TickType_t currentTick;
+				TickType_t xFarthestPeriod;
+				
+				//ListItem_t *head = pxIterator;
+
+				/* Get the list length */
+				listCounter = listCURRENT_LIST_LENGTH(pxList);
+				
+				for( index = 0; index < listCounter; index++ )
+				{
+					// Set the idle task's time counter to the farthest deadline
+					TCB_t *pxTCB = (TCB_t *)listGET_LIST_ITEM_OWNER(pxIterator);
+					xFarthestPeriod = pxTCB->xTaskPeriod;
+					
+					pxIterator = listGET_NEXT(pxIterator);
+				}
+				
+				
+//			  TCB_t *pxTCB = (TCB_t *)listGET_LIST_ITEM_OWNER(pxIterator);
+//        TickType_t xFarthestPeriod = pxTCB->xTaskPeriod;
+				
+        currentTick = xTaskGetTickCount();
+				
+				listSET_LIST_ITEM_VALUE( &( ( pxCurrentTCB )->xStateListItem ), xFarthestPeriod + currentTick );
 				taskYIELD();
 			}
-			else
-			{
-				mtCOVERAGE_TEST_MARKER();
-			}
+			#endif
 		}
 		#endif /* ( ( configUSE_PREEMPTION == 1 ) && ( configIDLE_SHOULD_YIELD == 1 ) ) */
 

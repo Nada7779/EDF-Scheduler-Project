@@ -136,6 +136,18 @@ static void prvSetupHardware( void );
 #define LOAD2_PRIODICITY    100
 /* TaskS to be created */
 
+
+
+/***********************************************/
+ int T1_In_Time , T1_Out_Time , T1_Total_Time ;
+ int T2_In_Time , T2_Out_Time , T2_Total_Time ;
+ int T3_In_Time , T3_Out_Time , T3_Total_Time ;
+ int T4_In_Time , T4_Out_Time , T4_Total_Time ;
+ int T5_In_Time , T5_Out_Time , T5_Total_Time ;
+ int T6_In_Time , T6_Out_Time , T6_Total_Time ;
+
+/*****/
+
 /* BUTTON_1_TASK  to detect the button 1 on (port 0 pin0) rising and falling edges  Every edge is an event that will be sent to a consumer_task */
 void Button_1_Monitor (void * pvParameters)
 {
@@ -151,7 +163,7 @@ void Button_1_Monitor (void * pvParameters)
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = BTN1_PRIODICITY;
 	
-//vTaskSetApplicationTaskTag( NULL, (void*) PIN8);
+vTaskSetApplicationTaskTag( NULL, (void*) PIN2);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
@@ -159,7 +171,6 @@ void Button_1_Monitor (void * pvParameters)
 	for( ;; )
 	{
 /* Task Code*/
-		//GPIO_write(PORT_0,PIN7,PIN_IS_HIGH);
 		lc_u8_button_state= GPIO_read(BUTTON_1_PORT, BUTTON_1_PIN);
 				if (lc_u8_button_state == PIN_IS_HIGH && lc_u8_button_pressed==RELEASED )
 				{ 
@@ -173,9 +184,9 @@ void Button_1_Monitor (void * pvParameters)
 					
            lc_u8_button_pressed=RELEASED;
 				}				
-		//vTaskDelay(READ_BUTTON_DELAY);	
+		
 				vTaskDelayUntil(&xLastWakeTime, xFrequency);
-					//	GPIO_write(PORT_0,PIN7,PIN_IS_LOW);
+				
 
 	}
 }
@@ -194,7 +205,7 @@ void Button_2_Monitor (void * pvParameters)
 	
 		TickType_t xLastWakeTime;
 	const TickType_t xFrequency = BTN2_PRIODICITY;
-	//	vTaskSetApplicationTaskTag( NULL, (void*) PIN9);
+		vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
 
 	
 	/* init the xLastWakeTime with the current time */
@@ -217,7 +228,6 @@ void Button_2_Monitor (void * pvParameters)
 					
            lc_u8_button_pressed=RELEASED;
 				}				
-		//vTaskDelay(READ_BUTTON_DELAY);	
 					vTaskDelayUntil(&xLastWakeTime, xFrequency);
 	}
 }
@@ -229,7 +239,7 @@ void Periodic_Transmitter (void * pvParameters)
 	
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = TR_PRIODICITY;
-//	vTaskSetApplicationTaskTag( NULL, (void*) PIN6);
+	vTaskSetApplicationTaskTag( NULL, (void*) PIN4);
 	
 	
 	/* init the xLastWakeTime with the current time */
@@ -254,7 +264,7 @@ void Uart_Receiver (void * pvParameters)
 	const TickType_t xFrequency = UART_PRIODICITY;
 //	vTaskSetApplicationTaskTag( NULL, (void*) PIN7);
 	
-	vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
+	vTaskSetApplicationTaskTag( NULL, (void*) PIN5);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
@@ -269,7 +279,6 @@ void Uart_Receiver (void * pvParameters)
 		
 		vSerialPutString((const signed char*)lc_ptr_ch_receive_string,STRING_SIZE);
 		
-		//vTaskDelay(CONSUMER_DELAY);	
 				vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
 	}
@@ -282,7 +291,7 @@ void Load_1_Simulation (void * pvParameters)
 
 		TickType_t xLastWakeTime;
 	const TickType_t xFrequency = LOAD1_PRIODICITY;
-	//	vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
+		vTaskSetApplicationTaskTag( NULL, (void*) PIN6);
 	
 	
 	
@@ -290,15 +299,12 @@ void Load_1_Simulation (void * pvParameters)
 	xLastWakeTime = xTaskGetTickCount();
 	for( ;; )
 	{  
-	//	GPIO_write(PORT_0, PIN3,PIN_IS_HIGH);
 		for (i=0;i<37500;i++)
 		{
-			i=1;
+			;
 		}
-			//	GPIO_write(PORT_0, PIN3,PIN_IS_LOW);
 
-		
-						vTaskDelayUntil(&xLastWakeTime, xFrequency);
+			vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
 		
 
@@ -312,27 +318,24 @@ void Load_2_Simulation (void * pvParameters)
 
 		TickType_t xLastWakeTime;
 	const TickType_t xFrequency = LOAD2_PRIODICITY;
-		//vTaskSetApplicationTaskTag( NULL, (void*) PIN2);
+	
+	vTaskSetApplicationTaskTag( NULL, (void*) PIN7);
 	
 	
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
 	for( ;; )
-	{   	//GPIO_write(PORT_0, PIN2,PIN_IS_HIGH);
+	{   	
   
 		for (i=0;i<90000;i++)
 		{
-			i=1;
+			;
 		}
-			//GPIO_write(PORT_0, PIN2,PIN_IS_LOW);
 
 			vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
 		
-		  /* Indicate Idle Task stop*/
-
-	//GPIO_write(PORT_0,PIN4,PIN_IS_LOW);
 
 	}
 }
@@ -341,9 +344,9 @@ void Load_2_Simulation (void * pvParameters)
 void vApplicationTickHook (void)
 {
 
-	GPIO_write(PORT_0,PIN5,PIN_IS_HIGH);
+	GPIO_write(PORT_0,PIN8,PIN_IS_HIGH);
 	
-	GPIO_write(PORT_0,PIN5,PIN_IS_LOW);
+	GPIO_write(PORT_0,PIN8,PIN_IS_LOW);
 	
 }
 
@@ -354,11 +357,10 @@ void vApplicationIdleHook (void)
 	
 	if(S_U8_LV_TagInit	==	0)
 	{
-		vTaskSetApplicationTaskTag( NULL, (void*) PIN4);
+		vTaskSetApplicationTaskTag( NULL, (void*) PIN9);
 		S_U8_LV_TagInit=1;
 	}
 
-  /* Indicate Idle Task start*/
 
 	}
 	
@@ -413,7 +415,6 @@ int main( void )
 	
 		gl_queue_handle = xQueueCreate(QUEUE_MAX, sizeof(const char*));
 
-	//SystemInit();
 
 	    /* Create Tasks here */
 
@@ -421,13 +422,13 @@ int main( void )
 		xTaskPeriodicCreate(
                Load_2_Simulation,                 /* function that implements the task */
 	             "Load_2_Simulation",                /* task's name */
-	             configMINIMAL_STACK_SIZE, /* stack size in words */
-	             (void *) NULL,           /* parameter passed to the task */
-		           2,                      /* task's priority */
-		           &Load_2_Simulation_Handler,    /* task's handler */
-							 100                      /*used to pass task periodicity */
+	             configMINIMAL_STACK_SIZE, 						/* stack size in words */
+	             (void *) NULL,          							 /* parameter passed to the task */
+		           2,                      							/* task's priority */
+		           &Load_2_Simulation_Handler,   				 /* task's handler */
+							 100                    							  /*used to pass task periodicity */
 );
-							 							 /* create Load_1_Simulation */  
+																										/* create Load_1_Simulation */  
 	xTaskPeriodicCreate(
                Load_1_Simulation,                 /* function that implements the task */
 	             "Load_1_Simulation",                /* task's name */

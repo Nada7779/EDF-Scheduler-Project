@@ -47,7 +47,7 @@
 
 #define configUSE_PREEMPTION		1
 #define configUSE_IDLE_HOOK			1
-#define configUSE_TICK_HOOK			1
+#define configUSE_TICK_HOOK			0
 #define configCPU_CLOCK_HZ			( ( unsigned long ) 60000000 )	/* =12.0MHz xtal multiplied by 5 using the PLL. */
 #define configTICK_RATE_HZ			( ( TickType_t ) 1000 )
 #define configMAX_PRIORITIES		( 4 )
@@ -59,12 +59,13 @@
 #define configIDLE_SHOULD_YIELD		1
 
 #define configUSE_APPLICATION_TASK_TAG   1
-
+#define configUSE_TIME_SLICING 		1
 #define configQUEUE_REGISTRY_SIZE 	0
 /**********************EDF***************************************/
-#define configUSE_EDF_SCHEDULER		       1
-#define configUSE_APPLICATION_TASK_TAG	1
-#define configSUPPORT_DYNAMIC_ALLOCATION 1
+#define configUSE_EDF_SCHEDULER		      	  1
+#define configUSE_APPLICATION_TASK_TAG			1
+
+
 /**********************************************************************/
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES 		0
@@ -73,20 +74,96 @@
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
 
-#define INCLUDE_vTaskPrioritySet		0
-#define INCLUDE_uxTaskPriorityGet		0
-#define INCLUDE_vTaskDelete				0
+#define INCLUDE_vTaskPrioritySet		1
+#define INCLUDE_uxTaskPriorityGet		1
+#define INCLUDE_vTaskDelete				1
 #define INCLUDE_vTaskCleanUpResources	0
-#define INCLUDE_vTaskSuspend			0
+#define INCLUDE_vTaskSuspend			1
 #define INCLUDE_vTaskDelayUntil			1
 #define INCLUDE_vTaskDelay				1
 
 
 /**********************************Trace Macros*****************************************/
 
-#define traceTASK_SWITCHED_IN() GPIO_write(PORT_0,(int)pxCurrentTCB->pxTaskTag,PIN_IS_HIGH)
+//#define traceTASK_SWITCHED_IN() GPIO_write(PORT_0,(int)pxCurrentTCB->pxTaskTag,PIN_IS_HIGH)
 
-#define traceTASK_SWITCHED_OUT() GPIO_write(PORT_0,(int)pxCurrentTCB->pxTaskTag,PIN_IS_LOW)
+//#define traceTASK_SWITCHED_OUT() GPIO_write(PORT_0,(int)pxCurrentTCB->pxTaskTag,PIN_IS_LOW)
+
+
+#define traceTASK_SWITCHED_IN(){																																					\
+																	if( PIN2 == (int)pxCurrentTCB->pxTaskTag )  														\
+																	{																																				\
+																		T1_In_Time = T1TC;																										\
+																	}																																				\
+																	else if( PIN3 == (int)pxCurrentTCB->pxTaskTag )													\
+																	{																																				\
+																		T2_In_Time = T1TC;																										\
+																	}																																				\
+																	else if( PIN4 == (int)pxCurrentTCB->pxTaskTag )													\
+																	{																																				\
+																		T3_In_Time = T1TC;																										\
+																	}																																				\
+																	else if( PIN5 == (int)pxCurrentTCB->pxTaskTag )													\
+																	{																																				\
+																		T4_In_Time = T1TC;																										\
+																	}																																				\
+																	else if( PIN6 == (int)pxCurrentTCB->pxTaskTag )													\
+																	{																																				\
+																		T5_In_Time = T1TC;																										\
+																	}																																				\
+																	else if( PIN7 == (int)pxCurrentTCB->pxTaskTag )													\
+																	{																																				\
+																		T6_In_Time = T1TC;																										\
+																	}																																				\
+																	else{}																																	\
+																	GPIO_write(PORT_0, (int)pxCurrentTCB->pxTaskTag, PIN_IS_HIGH );					\
+																}																																					\
+
+																
+#define traceTASK_SWITCHED_OUT(){																																					\
+																	if( PIN2 == (int)pxCurrentTCB->pxTaskTag )  														\
+																	{																																				\
+																		T1_Out_Time = T1TC;																										\
+																		T1_Total_Time += T1_Out_Time - T1_In_Time;														\
+																	}																																				\
+																	else if( PIN3 == (int)pxCurrentTCB->pxTaskTag )													\
+																	{																																				\
+																		T2_Out_Time = T1TC;																										\
+																		T2_Total_Time += T2_Out_Time - T2_In_Time;														\
+																	}																																				\
+																	else if( PIN4 == (int)pxCurrentTCB->pxTaskTag )													\
+																	{																																				\
+																		T3_Out_Time = T1TC;																										\
+																		T3_Total_Time += T3_Out_Time - T3_In_Time;														\
+																	}																																				\
+																	else if( PIN5 == (int)pxCurrentTCB->pxTaskTag )													\
+																	{																																				\
+																		T4_Out_Time = T1TC;																										\
+																		T4_Total_Time += T4_Out_Time - T4_In_Time;														\
+																	}																																				\
+																	else if( PIN6 == (int)pxCurrentTCB->pxTaskTag )													\
+																	{																																				\
+																		T5_Out_Time = T1TC;																										\
+																		T5_Total_Time += T5_Out_Time - T5_In_Time;														\
+																	}																																				\
+																	else if( PIN7 == (int)pxCurrentTCB->pxTaskTag )													\
+																	{																																				\
+																		T6_Out_Time = T1TC;																										\
+																		T6_Total_Time += T6_Out_Time - T6_In_Time;														\
+																	}																																				\
+																	else{}																																	\
+																	GPIO_write(PORT_0, (int)pxCurrentTCB->pxTaskTag, PIN_IS_LOW );					\
+																																																					\
+																}																																					\
+
+extern int T1_In_Time , T1_Out_Time , T1_Total_Time ;
+extern int T2_In_Time , T2_Out_Time , T2_Total_Time ;
+extern int T3_In_Time , T3_Out_Time , T3_Total_Time ;
+extern int T4_In_Time , T4_Out_Time , T4_Total_Time ;
+extern int T5_In_Time , T5_Out_Time , T5_Total_Time ;
+extern int T6_In_Time , T6_Out_Time , T6_Total_Time ;
+
+
 
 /*****************************************************************************/
 
