@@ -317,7 +317,7 @@ int main( void )
 		           &Load_2_Simulation_Handler,    /* task's handler */
 							 100                      /*used to pass task periodicity */
 );
-								
+			
 	/* Now all the tasks have been started - start the scheduler.
 
 	NOTE : Tasks run in system mode and the scheduler runs in Supervisor mode.
