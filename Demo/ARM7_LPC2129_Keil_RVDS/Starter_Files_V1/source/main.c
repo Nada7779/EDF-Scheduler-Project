@@ -288,8 +288,8 @@ void Load_1_Simulation (void * pvParameters)
 		{
 			;
 		}
-			//	GPIO_write(PORT_0, PIN3,PIN_IS_LOW);
-//				vTaskDelay(10);
+				GPIO_write(PORT_0, PIN3,PIN_IS_LOW);
+
 		
 						vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
@@ -317,14 +317,13 @@ void Load_2_Simulation (void * pvParameters)
 			;
 		}
 			GPIO_write(PORT_0, PIN2,PIN_IS_LOW);
-//		vTaskDelay(10);
-		
+
 			vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
 		
 		  /* Indicate Idle Task stop*/
 
-	//GPIO_write(PORT_0,PIN4,PIN_IS_LOW);
+	GPIO_write(PORT_0,PIN4,PIN_IS_LOW);
 
 	}
 }
