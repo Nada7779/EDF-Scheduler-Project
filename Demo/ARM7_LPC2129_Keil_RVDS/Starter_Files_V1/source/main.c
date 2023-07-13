@@ -146,7 +146,7 @@ static void prvSetupHardware( void );
  int T5_In_Time , T5_Out_Time , T5_Total_Time ;
  int T6_In_Time , T6_Out_Time , T6_Total_Time ;
 
-/*****/
+/**********************************************/
 
 /* BUTTON_1_TASK  to detect the button 1 on (port 0 pin0) rising and falling edges  Every edge is an event that will be sent to a consumer_task */
 void Button_1_Monitor (void * pvParameters)
