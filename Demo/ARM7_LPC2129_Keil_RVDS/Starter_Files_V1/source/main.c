@@ -110,6 +110,13 @@ xQueueHandle gl_queue_handle;
 #define  BUTTON_2_PIN   PIN1
 
 
+extern BaseType_t  xTaskPeriodicCreate(	TaskFunction_t pxTaskCode,
+							const char * const pcName,		/*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+							const configSTACK_DEPTH_TYPE usStackDepth,
+							void * const pvParameters,
+							UBaseType_t uxPriority,
+							TaskHandle_t * const pxCreatedTask, TickType_t period );
+
 /*
  * Configure the processor for use with the Keil demo board.  This is very
  * minimal as most of the setup is managed by the settings in the project
@@ -222,10 +229,7 @@ void Load_2_Simulation (void * pvParameters)
 	int i=0; 
 	for( ;; )
 	{     
-		for (i=0;i<500;i++)
-		{
-			;
-		}
+		
 	}
 }
 
@@ -298,25 +302,7 @@ int main( void )
 							 20                     /*used to pass task periodicity */
 );
 							 /* create Load_1_Simulation */  
-	xTaskPeriodicCreate(
-               Load_1_Simulation,                 /* function that implements the task */
-	             "Load_1_Simulation",                /* task's name */
-	             configMINIMAL_STACK_SIZE, /* stack size in words */
-	             (void *) NULL,           /* parameter passed to the task */
-		           1,                      /* task's priority */
-		           &Load_1_Simulation_Handler,    /* task's handler */
-							 10                      /*used to pass task periodicity */
-);
-							 /* create Load_2_Simulation */  
-	xTaskPeriodicCreate(
-               Load_2_Simulation,                 /* function that implements the task */
-	             "Load_2_Simulation",                /* task's name */
-	             configMINIMAL_STACK_SIZE, /* stack size in words */
-	             (void *) NULL,           /* parameter passed to the task */
-		           1,                      /* task's priority */
-		           &Load_2_Simulation_Handler,    /* task's handler */
-							 100                      /*used to pass task periodicity */
-);
+
 			
 	/* Now all the tasks have been started - start the scheduler.
 
