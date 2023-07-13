@@ -136,9 +136,19 @@ static void prvSetupHardware( void );
 #define LOAD2_PRIODICITY    100
 /* TaskS to be created */
 
+int T1_In_Time = 0 , T1_Out_Time = 0 , T1_Total_Time = 0;  
+int T2_In_Time = 0 , T2_Out_Time = 0 , T2_Total_Time = 0;
+int T3_In_Time = 0 , T3_Out_Time = 0 , T3_Total_Time = 0;
+int T4_In_Time = 0 , T4_Out_Time = 0 , T4_Total_Time = 0;
+int T5_In_Time = 0 , T5_Out_Time = 0 , T5_Total_Time = 0;
+int T6_In_Time = 0 , T6_Out_Time = 0 , T6_Total_Time = 0;
+int currentTickSystem = 0 ;
+int CPU_LOAD = 0 ;
+
 /* BUTTON_1_TASK  to detect the button 1 on (port 0 pin0) rising and falling edges  Every edge is an event that will be sent to a consumer_task */
 void Button_1_Monitor (void * pvParameters)
 {
+	
 	/* local variables */
 	uint8_t lc_u8_button_pressed=RELEASED;
 
@@ -151,14 +161,14 @@ void Button_1_Monitor (void * pvParameters)
 	const TickType_t xFrequency = BTN1_PRIODICITY;
 	
 	//vTaskSetApplicationTaskTag( NULL, (void*) PIN2);
-	
+	vTaskSetApplicationTaskTag(NULL,(void *) PIN3);
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
 	
 	for( ;; )
 	{
 /* Task Code*/
-		GPIO_write(PORT_0,PIN7,PIN_IS_HIGH);
+		//GPIO_write(PORT_0,PIN7,PIN_IS_HIGH);
 		lc_u8_button_state= GPIO_read(BUTTON_1_PORT, BUTTON_1_PIN);
 				if (lc_u8_button_state == PIN_IS_HIGH && lc_u8_button_pressed==RELEASED )
 				{ 
@@ -174,7 +184,7 @@ void Button_1_Monitor (void * pvParameters)
 				}				
 		//vTaskDelay(READ_BUTTON_DELAY);	
 				vTaskDelayUntil(&xLastWakeTime, xFrequency);
-						GPIO_write(PORT_0,PIN7,PIN_IS_LOW);
+					//	GPIO_write(PORT_0,PIN7,PIN_IS_LOW);
 
 	}
 }
@@ -193,7 +203,8 @@ void Button_2_Monitor (void * pvParameters)
 	const TickType_t xFrequency = BTN2_PRIODICITY;
 	
 	//vTaskSetApplicationTaskTag( NULL, (void*) PIN2);
-	
+		vTaskSetApplicationTaskTag(NULL,(void *) PIN4);
+
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
 	
@@ -227,7 +238,8 @@ void Periodic_Transmitter (void * pvParameters)
 	const TickType_t xFrequency = TR_PRIODICITY;
 	
 	//vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
-	
+		vTaskSetApplicationTaskTag(NULL,(void *) PIN5);
+
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
 	for( ;; )
@@ -250,9 +262,10 @@ void Uart_Receiver (void * pvParameters)
 	
 	
 	//vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
-	
+		vTaskSetApplicationTaskTag(NULL,(void *) PIN6);
+
 	/* init the xLastWakeTime with the current time */
-	xLastWakeTime = xTaskGetTickCount();
+	//xLastWakeTime = xTaskGetTickCount();
 	
 	//vTaskSetApplicationTaskTag( NULL, (void*) PIN2);
 	
@@ -278,12 +291,13 @@ void Load_1_Simulation (void * pvParameters)
 	
 	
 	//vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
-	
+		vTaskSetApplicationTaskTag(NULL,(void *) PIN7);
+
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
 	for( ;; )
 	{  
-		GPIO_write(PORT_0, PIN3,PIN_IS_HIGH);
+		//GPIO_write(PORT_0, PIN3,PIN_IS_HIGH);
 		for (i=0;i<37500;i++)
 		{
 			;
@@ -306,11 +320,12 @@ void Load_2_Simulation (void * pvParameters)
 	
 	
 	//vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
-	
+		vTaskSetApplicationTaskTag(NULL,(void *) PIN8);
+
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
 	for( ;; )
-	{   	GPIO_write(PORT_0, PIN2,PIN_IS_HIGH);
+	{   	//GPIO_write(PORT_0, PIN2,PIN_IS_HIGH);
   
 		for (i=0;i<90000;i++)
 		{
@@ -324,7 +339,7 @@ void Load_2_Simulation (void * pvParameters)
 		
 		  /* Indicate Idle Task stop*/
 
-	GPIO_write(PORT_0,PIN4,PIN_IS_LOW);
+	//GPIO_write(PORT_0,PIN4,PIN_IS_LOW);
 
 	}
 }
@@ -333,10 +348,11 @@ void Load_2_Simulation (void * pvParameters)
 void vApplicationTickHook (void)
 {
 
-	GPIO_write(PORT_0,PIN5,PIN_IS_HIGH);
+	GPIO_write(PORT_0,PIN9,PIN_IS_HIGH);
 	
-	GPIO_write(PORT_0,PIN5,PIN_IS_LOW);
-	
+	GPIO_write(PORT_0,PIN9,PIN_IS_LOW);
+	currentTickSystem = T1TC ;
+	CPU_LOAD = (float)(T1_Total_Time+T2_Total_Time+T3_Total_Time +T4_Total_Time +T5_Total_Time +T6_Total_Time)/(float) currentTickSystem *100;
 }
 
 /* Application idle hook callout */
@@ -345,8 +361,11 @@ void vApplicationIdleHook (void)
 
   /* Indicate Idle Task start*/
 	
-	GPIO_write(PORT_0,PIN4,PIN_IS_HIGH);
-
+	static int tagInit = 0 ;
+	if(0 == tagInit){
+			vTaskSetApplicationTaskTag(NULL,(void *) PIN2);
+			tagInit = 1 ;
+	}
 	}
 	
 

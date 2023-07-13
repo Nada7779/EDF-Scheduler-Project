@@ -73,19 +73,80 @@
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
 
-#define INCLUDE_vTaskPrioritySet		0
-#define INCLUDE_uxTaskPriorityGet		0
-#define INCLUDE_vTaskDelete				0
+#define INCLUDE_vTaskPrioritySet		1
+#define INCLUDE_uxTaskPriorityGet		1
+#define INCLUDE_vTaskDelete				1
 #define INCLUDE_vTaskCleanUpResources	0
-#define INCLUDE_vTaskSuspend			0
+#define INCLUDE_vTaskSuspend			1
 #define INCLUDE_vTaskDelayUntil			1
 #define INCLUDE_vTaskDelay				1
 
 
-//#define traceTASK_SWITCHED_IN() GPIO_write(PORT_0,(int)pxCurrentTCB->,PIN_IS_HIGH)
+#define traceTASK_SWITCHED_IN() { 																												\
+																	if(PIN3 == (int)pxCurrentTCB->pxTaskTag){ 							\
+																			T1_In_Time = T1TC;																	\
+																																													\
+																	}																												\
+																																													\
+																	else if(PIN4 == (int)pxCurrentTCB->pxTaskTag){ 					\
+																			T2_In_Time = T1TC;																	\
+																																													\
+																	}																												\
+																  else if(PIN5 == (int)pxCurrentTCB->pxTaskTag){ 					\
+																			T3_In_Time = T1TC;																	\
+																																													\
+																	}																												\
+																	else if(PIN6 == (int)pxCurrentTCB->pxTaskTag){ 					\
+																			T4_In_Time = T1TC;																	\
+																																													\
+																	}																												\
+																	else if(PIN7 == (int)pxCurrentTCB->pxTaskTag){				  \
+																			T5_In_Time = T1TC;																	\
+																																													\
+																	}																												\
+																	else if(PIN8 == (int)pxCurrentTCB->pxTaskTag){					\
+																			T6_In_Time = T1TC;																	\
+																																													\
+																	}																												\
+																GPIO_write(PORT_0,(int)pxCurrentTCB->pxTaskTag,PIN_IS_HIGH); \
+																}
 
 
-//#define traceTASK_SWITCHED_OUT() GPIO_write(PORT_0,(int)pxCurrentTCB->,PIN_IS_LOW)
+#define traceTASK_SWITCHED_OUT() { 																												\
+																	if(PIN3 == (int)pxCurrentTCB->pxTaskTag){ 							\
+																			T1_Out_Time = T1TC;																	\
+																			T1_Total_Time += 	T1_Out_Time -T1_In_Time;			    \
+																	}																												\
+																	else if(PIN4 == (int)pxCurrentTCB->pxTaskTag){ 					\
+																			T2_Out_Time = T1TC;																	\
+																			T2_Total_Time += 	T2_Out_Time -T2_In_Time;			    \
+																	}																												\
+																  else if(PIN5 == (int)pxCurrentTCB->pxTaskTag){ 					\
+																			T3_Out_Time = T1TC;																	\
+																			T3_Total_Time += 	T3_Out_Time -T3_In_Time;			    \
+																	}																												\
+																	else if(PIN6 == (int)pxCurrentTCB->pxTaskTag){ 					\
+																			T4_Out_Time = T1TC;																	\
+																			T4_Total_Time += 	T4_Out_Time - T4_In_Time;			    \
+																	}																												\
+																	else if(PIN7 == (int)pxCurrentTCB->pxTaskTag){				  \
+																			T5_Out_Time = T1TC;																	\
+																			T5_Total_Time += T5_Out_Time - T5_In_Time;			    \
+																	}																												\
+																	else if(PIN8 == (int)pxCurrentTCB->pxTaskTag){					\
+																			T6_Out_Time = T1TC;																	\
+																		  T6_Total_Time += T6_Out_Time -T6_In_Time;			      \
+																	}	 																										  \
+																																													\
+																	GPIO_write(PORT_0,(int)pxCurrentTCB->pxTaskTag,PIN_IS_LOW); \
+																}
+
+extern int T1_In_Time,T1_Out_Time,T1_Total_Time;
+extern int T2_In_Time,T2_Out_Time,T2_Total_Time;
+extern int T3_In_Time,T3_Out_Time,T3_Total_Time;
+extern int T4_In_Time,T4_Out_Time,T4_Total_Time;
+extern int T5_In_Time,T5_Out_Time,T5_Total_Time;
+extern int T6_In_Time,T6_Out_Time,T6_Total_Time;
 
 
 #endif /* FREERTOS_CONFIG_H */
