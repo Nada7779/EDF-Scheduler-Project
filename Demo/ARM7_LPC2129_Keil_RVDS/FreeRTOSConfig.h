@@ -47,7 +47,7 @@
 
 #define configUSE_PREEMPTION		1
 #define configUSE_IDLE_HOOK			1
-#define configUSE_TICK_HOOK			1
+#define configUSE_TICK_HOOK			0
 #define configCPU_CLOCK_HZ			( ( unsigned long ) 60000000 )	/* =12.0MHz xtal multiplied by 5 using the PLL. */
 #define configTICK_RATE_HZ			( ( TickType_t ) 1000 )
 #define configMAX_PRIORITIES		( 4 )
@@ -58,7 +58,14 @@
 #define configUSE_16_BIT_TICKS		0
 #define configIDLE_SHOULD_YIELD		1
 
-#define configUSE_APPLICATION_TASK_TAG   1
+
+/* Run time and task stats gathering related definitions. */
+//#define configUSE_STATS_FORMATTING_FUNCTIONS  1
+//#define configGENERATE_RUN_TIME_STATS         1
+//#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()
+////#define portGET_RUN_TIME_COUNTER_VALUE()     (TITC)
+
+//#define configUSE_APPLICATION_TASK_TAG   1
 
 #define configQUEUE_REGISTRY_SIZE 	0
 /**********************EDF***************************************/
@@ -82,10 +89,27 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelay				1
 
 
-//#define traceTASK_SWITCHED_IN() GPIO_write(PORT_0,(int)pxCurrentTCB->,PIN_IS_HIGH)
+#define traceTASK_SWITCHED_IN()  GPIO_write(PORT_0,(int)pxCurrentTCB->pxTaskTag,PIN_IS_HIGH);
 
 
-//#define traceTASK_SWITCHED_OUT() GPIO_write(PORT_0,(int)pxCurrentTCB->,PIN_IS_LOW)
+#define traceTASK_SWITCHED_OUT() GPIO_write(PORT_0,(int)pxCurrentTCB->pxTaskTag,PIN_IS_LOW);
+
+
+//{          \
+//	               if (PIN0 == (int)pxCurrentTCB->pxTaskTag )  \
+//								 {                                            \
+//									 T1_In_Time = TITC;                        \
+//								 }                                 \
+//								 else if(PIN3 == (int)pxCurrentTCB->pxTaskTag)  \
+//								 {                                               \
+//									 			 T1_In_Time = TITC;                      \
+//								 }                                             \
+//	           GPIO_write(PORT_0,(int)pxCurrentTCB->,PIN_IS_HIGH);   \
+//							 }                                                    \
+
+
+//#define traceTASK_SWITCHED_OUT() (	GPIO_write(PORT_0,PIN6,PIN_IS_LOW);
+
 
 
 #endif /* FREERTOS_CONFIG_H */

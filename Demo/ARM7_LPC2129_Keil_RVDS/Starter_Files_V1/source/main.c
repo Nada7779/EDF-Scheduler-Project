@@ -105,6 +105,8 @@ xQueueHandle gl_queue_handle;
 // changes
 
 
+
+
 /*
  * Configure the processor for use with the Keil demo board.  This is very
  * minimal as most of the setup is managed by the settings in the project
@@ -226,7 +228,7 @@ void Periodic_Transmitter (void * pvParameters)
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = TR_PRIODICITY;
 	
-	//vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
+	vTaskSetApplicationTaskTag( NULL, (void*) PIN6);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
@@ -248,13 +250,7 @@ void Uart_Receiver (void * pvParameters)
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = UART_PRIODICITY;
 	
-	
-	//vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
-	
-	/* init the xLastWakeTime with the current time */
-	xLastWakeTime = xTaskGetTickCount();
-	
-	//vTaskSetApplicationTaskTag( NULL, (void*) PIN2);
+	vTaskSetApplicationTaskTag( NULL, (void*) PIN4);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
@@ -277,7 +273,7 @@ void Load_1_Simulation (void * pvParameters)
 	const TickType_t xFrequency = LOAD1_PRIODICITY;
 	
 	
-	//vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
+	vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
@@ -305,7 +301,7 @@ void Load_2_Simulation (void * pvParameters)
 	const TickType_t xFrequency = LOAD2_PRIODICITY;
 	
 	
-	//vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
+	vTaskSetApplicationTaskTag( NULL, (void*) PIN0);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
@@ -339,43 +335,22 @@ void vApplicationTickHook (void)
 }
 
 /* Application idle hook callout */
+
 void vApplicationIdleHook (void)
 {
 
-  /* Indicate Idle Task start*/
+static int TagInit = 0;
 	
-	GPIO_write(PORT_0,PIN4,PIN_IS_HIGH);
-
+	if(0 == TagInit)
+	{
+	vTaskSetApplicationTaskTag( NULL, (void*) PIN7);
+	
+	TagInit = 1;
 	}
 	
+}
 
-
-
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-/* Application idle hook callout */
-//void vApplicationIdleHook (void)
-//{
-
-//static int TagInit = 0;
-//	
-//	if(0 == TagInit)
-//	{
-//	vTaskSetApplicationTaskTag( NULL, (void*) PIN6);
-//	
-//	TagInit = 1;
-//	}
-//	
-//}
 
 /*****************************************************************/
 
@@ -399,7 +374,7 @@ int main( void )
 	
 		gl_queue_handle = xQueueCreate(QUEUE_MAX, sizeof(const char*));
 
-	//SystemInit();
+
 
 	    /* Create Tasks here */
 
@@ -423,25 +398,25 @@ int main( void )
 		           &Load_1_Simulation_Handler,    /* task's handler */
 							 10                      /*used to pass task periodicity */
 );
-	xTaskPeriodicCreate(
-               Button_1_Monitor,                 /* function that implements the task */
-	             "Button_1_Monitor",                /* task's name */
-	             configMINIMAL_STACK_SIZE, /* stack size in words */
-	             (void *) NULL,           /* parameter passed to the task */
-		           2,                      /* task's priority */
-		           &Button_1_Monitor_Handler, /* task's handler */
-							 50                      /*used to pass task periodicity */
-);
+//	xTaskPeriodicCreate(
+//               Button_1_Monitor,                 /* function that implements the task */
+//	             "Button_1_Monitor",                /* task's name */
+//	             configMINIMAL_STACK_SIZE, /* stack size in words */
+//	             (void *) NULL,           /* parameter passed to the task */
+//		           2,                      /* task's priority */
+//		           &Button_1_Monitor_Handler, /* task's handler */
+//							 50                      /*used to pass task periodicity */
+//);
 /* create Button_2_Monitor */
-	xTaskPeriodicCreate(
-               Button_2_Monitor,                 /* function that implements the task */
-	             "Button_2_Monitor",                /* task's name */
-	             configMINIMAL_STACK_SIZE, /* stack size in words */
-	             (void *) NULL,           /* parameter passed to the task */
-		           2,                      /* task's priority */
-		           &Button_2_Monitor_Handler,    /* task's handler */
-							 50                      /*used to pass task periodicity */
-);
+//	xTaskPeriodicCreate(
+//               Button_2_Monitor,                 /* function that implements the task */
+//	             "Button_2_Monitor",                /* task's name */
+//	             configMINIMAL_STACK_SIZE, /* stack size in words */
+//	             (void *) NULL,           /* parameter passed to the task */
+//		           2,                      /* task's priority */
+//		           &Button_2_Monitor_Handler,    /* task's handler */
+//							 50                      /*used to pass task periodicity */
+//);
 
 /* create Uart_Receiver */  
 	xTaskPeriodicCreate(
