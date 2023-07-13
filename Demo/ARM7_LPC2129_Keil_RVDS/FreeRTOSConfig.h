@@ -58,7 +58,7 @@
 
 #define configQUEUE_REGISTRY_SIZE 	0
 /**********************EDF***************************************/
-#define configUSE_EDF_SCHEDULER		1
+#define configUSE_EDF_SCHEDULER		       1
 #define configUSE_APPLICATION_TASK_TAG	1
 #define configSUPPORT_DYNAMIC_ALLOCATION 1
 /**********************************************************************/

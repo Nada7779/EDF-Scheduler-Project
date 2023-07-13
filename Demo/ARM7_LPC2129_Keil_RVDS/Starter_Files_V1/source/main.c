@@ -93,6 +93,16 @@ SemaphoreHandle_t button_released;
 /* Queue object */
 xQueueHandle gl_queue_handle;
 
+
+
+
+/*
+ * Configure the processor for use with the Keil demo board.  This is very
+ * minimal as most of the setup is managed by the settings in the project
+ * file.
+ */
+static void prvSetupHardware( void );
+/*-----------------------------------------------------------*/
  /* Global Variables */
  uint8_t string_size;
  
@@ -108,15 +118,6 @@ xQueueHandle gl_queue_handle;
 #define  BUTTON_2_PORT  PORT_0
 #define  BUTTON_1_PIN   PIN0
 #define  BUTTON_2_PIN   PIN1
-
-
-/*
- * Configure the processor for use with the Keil demo board.  This is very
- * minimal as most of the setup is managed by the settings in the project
- * file.
- */
-static void prvSetupHardware( void );
-/*-----------------------------------------------------------*/
 /* TaskS to be created */
 
 /* BUTTON_1_TASK  to detect the button 1 on (port 0 pin0) rising and falling edges  Every edge is an event that will be sent to a consumer_task */
@@ -188,7 +189,7 @@ void Periodic_Transmitter (void * pvParameters)
 	
       xQueueSend(gl_queue_handle,&lc_ptr_ch_send_string,portMAX_DELAY);
 
-		//vTaskDelay(SEND_DELAY);
+		vTaskDelay(SEND_DELAY);
 	}
 }
 /* This task will send the strings recieved from buttons and send tasks to the uart */
@@ -201,37 +202,50 @@ void Uart_Receiver (void * pvParameters)
 		
 		vSerialPutString((const signed char*)lc_ptr_ch_receive_string,STRING_SIZE);
 		
-		vTaskDelay(CONSUMER_DELAY);	
+	//	vTaskDelay(CONSUMER_DELAY);	
 	}
 }
 /* this task to create empty loop that loops X times to be with Execution time= 5ms*/
 void Load_1_Simulation (void * pvParameters)
 {	
-	int i=0; 
+	 int i=0; 
 	for( ;; )
-	{     
-		for (i=0;i<500;i++)
+	{  
+		GPIO_write(PORT_0, PIN3,PIN_IS_HIGH);
+		for (i=0;i<37500;i++)
 		{
 			;
 		}
+				GPIO_write(PORT_0, PIN3,PIN_IS_LOW);
+				//vTaskDelay(10);
+
 	}
 }
 /* this task to create empty loop that loops X times to be with Execution time= 12ms */
 void Load_2_Simulation (void * pvParameters)
 {	
-	int i=0; 
+	 int i=0; 
 	for( ;; )
-	{     
-		for (i=0;i<500;i++)
+	{   	GPIO_write(PORT_0, PIN2,PIN_IS_HIGH);
+  
+		for (i=0;i<90000;i++)
 		{
 			;
 		}
+			GPIO_write(PORT_0, PIN2,PIN_IS_LOW);
+		//vTaskDelay(10);
+
 	}
 }
 
 /*****************************************************************/
 
-
+extern BaseType_t  xTaskPeriodicCreate(	TaskFunction_t pxTaskCode,
+							const char * const pcName,		/*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+							const configSTACK_DEPTH_TYPE usStackDepth,
+							void * const pvParameters,
+							UBaseType_t uxPriority,
+							TaskHandle_t * const pxCreatedTask, TickType_t period );
 
 /*
  * Application entry point:
@@ -241,29 +255,41 @@ int main( void )
 {
 	/* Setup the hardware for use with the Keil demo board. */
 	prvSetupHardware();
+		/* Create queue */
+
 	
-	
-//	/*For Kareem & nada*/
-//	/*How to create a periodic Task*/
-//	xTaskPeriodicCreate 
-//	(
-//	TSK_A,     	                     /*Function that implements the task*/
-//	"TSK_A",                          /*Text name for the task*/
-//	configMINIMAL_STACK_SIZE,            /*Stack size in the words not bytes*/
-//	(void*)NULL,                          /*parameters that passed into the task*/
-//	1,                                   /*priority at which the task is created*/
-//	&TSK_A_Handler,	                 /*used to pass out the created task's handle*/
-//	10															/*used to pass task periodicit*/
-//	);
+		gl_queue_handle = xQueueCreate(QUEUE_MAX, sizeof(const char*));
+
+	//SystemInit();
+
 	    /* Create Tasks here */
 
 /* create Button_1_Monitor */
+		xTaskPeriodicCreate(
+               Load_2_Simulation,                 /* function that implements the task */
+	             "Load_2_Simulation",                /* task's name */
+	             configMINIMAL_STACK_SIZE, /* stack size in words */
+	             (void *) NULL,           /* parameter passed to the task */
+		           2,                      /* task's priority */
+		           &Load_2_Simulation_Handler,    /* task's handler */
+							 100                      /*used to pass task periodicity */
+);
+							 							 /* create Load_1_Simulation */  
+	xTaskPeriodicCreate(
+               Load_1_Simulation,                 /* function that implements the task */
+	             "Load_1_Simulation",                /* task's name */
+	             configMINIMAL_STACK_SIZE, /* stack size in words */
+	             (void *) NULL,           /* parameter passed to the task */
+		           2,                      /* task's priority */
+		           &Load_1_Simulation_Handler,    /* task's handler */
+							 10                      /*used to pass task periodicity */
+);
 	xTaskPeriodicCreate(
                Button_1_Monitor,                 /* function that implements the task */
 	             "Button_1_Monitor",                /* task's name */
 	             configMINIMAL_STACK_SIZE, /* stack size in words */
 	             (void *) NULL,           /* parameter passed to the task */
-		           1,                      /* task's priority */
+		           2,                      /* task's priority */
 		           &Button_1_Monitor_Handler, /* task's handler */
 							 50                      /*used to pass task periodicity */
 );
@@ -273,50 +299,34 @@ int main( void )
 	             "Button_2_Monitor",                /* task's name */
 	             configMINIMAL_STACK_SIZE, /* stack size in words */
 	             (void *) NULL,           /* parameter passed to the task */
-		           1,                      /* task's priority */
+		           2,                      /* task's priority */
 		           &Button_2_Monitor_Handler,    /* task's handler */
 							 50                      /*used to pass task periodicity */
 );
-/* create Periodic_Transmitter */
-	xTaskPeriodicCreate(
-               Periodic_Transmitter,                 /* function that implements the task */
-	             "Periodic_Transmitter",                /* task's name */
-	             configMINIMAL_STACK_SIZE, /* stack size in words */
-	             (void *) NULL,           /* parameter passed to the task */
-		           1,                      /* task's priority */
-		           &Periodic_Transmitter_Handler,    /* task's handler */
-							  100                      /*used to pass task periodicity */
-);
+
 /* create Uart_Receiver */  
 	xTaskPeriodicCreate(
                Uart_Receiver,                 /* function that implements the task */
 	             "Uart_Receiver",                /* task's name */
 	             configMINIMAL_STACK_SIZE, /* stack size in words */
 	             (void *) NULL,           /* parameter passed to the task */
-		           1,                      /* task's priority */
+		           2,                      /* task's priority */
 		           &Uart_Receiver_Handler,    /* task's handler */
 							 20                     /*used to pass task periodicity */
 );
-							 /* create Load_1_Simulation */  
+	/* create Periodic_Transmitter */
 	xTaskPeriodicCreate(
-               Load_1_Simulation,                 /* function that implements the task */
-	             "Load_1_Simulation",                /* task's name */
+               Periodic_Transmitter,                 /* function that implements the task */
+	             "Periodic_Transmitter",                /* task's name */
 	             configMINIMAL_STACK_SIZE, /* stack size in words */
 	             (void *) NULL,           /* parameter passed to the task */
-		           1,                      /* task's priority */
-		           &Load_1_Simulation_Handler,    /* task's handler */
-							 10                      /*used to pass task periodicity */
+		           2,                      /* task's priority */
+		           &Periodic_Transmitter_Handler,    /* task's handler */
+							  100                     /*used to pass task periodicity */
 );
+
 							 /* create Load_2_Simulation */  
-	xTaskPeriodicCreate(
-               Load_2_Simulation,                 /* function that implements the task */
-	             "Load_2_Simulation",                /* task's name */
-	             configMINIMAL_STACK_SIZE, /* stack size in words */
-	             (void *) NULL,           /* parameter passed to the task */
-		           1,                      /* task's priority */
-		           &Load_2_Simulation_Handler,    /* task's handler */
-							 100                      /*used to pass task periodicity */
-);
+
 			
 	/* Now all the tasks have been started - start the scheduler.
 
