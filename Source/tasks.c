@@ -2045,7 +2045,7 @@ BaseType_t xReturn;
 	#else
 	#if (configUSE_EDF_SCHEDULER == 1)
  
- TickType_t initIDLEPeriod = 100;
+ TickType_t initIDLEPeriod = 200;
  xReturn = xTaskPeriodicCreate(	prvIdleTask,
 								configIDLE_TASK_NAME,
 								configMINIMAL_STACK_SIZE,
@@ -2854,7 +2854,7 @@ BaseType_t xSwitchRequired = pdFALSE;
 					#if (  configUSE_PREEMPTION == 1 )
 					{
 						#if ( configUSE_EDF_SCHEDULER == 1 )
-						if( pxTCB->xTaskPeriod < pxCurrentTCB->xTaskPeriod)
+						if( 1)
 						{
 							xSwitchRequired = pdTRUE;
 						}
