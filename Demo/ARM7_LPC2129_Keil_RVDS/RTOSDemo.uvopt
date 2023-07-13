@@ -317,7 +317,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGDARM</Key>
-          <Name>(134=-1,-1,-1,-1,0)(135=-1,-1,-1,-1,0)(107=-1,-1,-1,-1,0)(108=-1,-1,-1,-1,0)(106=-1,-1,-1,-1,0)(105=-1,-1,-1,-1,0)(80=-1,-1,-1,-1,0)(104=-1,-1,-1,-1,0)(100=1248,263,1831,445,1)(101=-1,-1,-1,-1,0)(113=289,120,674,561,0)(112=-1,-1,-1,-1,0)(136=-1,-1,-1,-1,0)(117=-1,-1,-1,-1,0)(118=-1,-1,-1,-1,0)(110=-1,-1,-1,-1,0)(111=-1,-1,-1,-1,0)(114=-1,-1,-1,-1,0)(119=-1,-1,-1,-1,0)(130=-1,-1,-1,-1,0)(131=-1,-1,-1,-1,0)(121=-1,-1,-1,-1,0)(122=-1,-1,-1,-1,0)(132=-1,-1,-1,-1,0)(115=-1,-1,-1,-1,0)(116=-1,-1,-1,-1,0)</Name>
+          <Name>(134=-1,-1,-1,-1,0)(135=-1,-1,-1,-1,0)(107=-1,-1,-1,-1,0)(108=-1,-1,-1,-1,0)(106=-1,-1,-1,-1,0)(105=-1,-1,-1,-1,0)(80=-1,-1,-1,-1,0)(104=-1,-1,-1,-1,0)(100=1267,37,1850,219,1)(101=-1,-1,-1,-1,0)(113=289,120,674,561,0)(112=-1,-1,-1,-1,0)(136=-1,-1,-1,-1,0)(117=-1,-1,-1,-1,0)(118=-1,-1,-1,-1,0)(110=-1,-1,-1,-1,0)(111=-1,-1,-1,-1,0)(114=-1,-1,-1,-1,0)(119=-1,-1,-1,-1,0)(130=-1,-1,-1,-1,0)(131=-1,-1,-1,-1,0)(121=-1,-1,-1,-1,0)(122=-1,-1,-1,-1,0)(132=-1,-1,-1,-1,0)(115=-1,-1,-1,-1,0)(116=-1,-1,-1,-1,0)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -329,9 +329,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>235</LineNumber>
+          <LineNumber>315</LineNumber>
           <EnabledFlag>0</EnabledFlag>
-          <Address>1402</Address>
+          <Address>1492</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -340,12 +340,44 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>.\Starter_Files_V1\source\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\RTOSDemo\Starter_Files_V1/source/main.c\235</Expression>
+          <Expression></Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>231</LineNumber>
+          <LineNumber>313</LineNumber>
+          <EnabledFlag>0</EnabledFlag>
+          <Address>1482</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>.\Starter_Files_V1\source\main.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>265</LineNumber>
+          <EnabledFlag>0</EnabledFlag>
+          <Address>1404</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>.\Starter_Files_V1\source\main.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+        <Bp>
+          <Number>3</Number>
+          <Type>0</Type>
+          <LineNumber>263</LineNumber>
           <EnabledFlag>0</EnabledFlag>
           <Address>1390</Address>
           <ByteObject>0</ByteObject>
@@ -356,46 +388,14 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>.\Starter_Files_V1\source\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\RTOSDemo\Starter_Files_V1/source/main.c\231</Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
-          <Type>0</Type>
-          <LineNumber>187</LineNumber>
-          <EnabledFlag>0</EnabledFlag>
-          <Address>1286</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\Starter_Files_V1\source\main.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\RTOSDemo\Starter_Files_V1/source/main.c\187</Expression>
-        </Bp>
-        <Bp>
-          <Number>3</Number>
-          <Type>0</Type>
-          <LineNumber>199</LineNumber>
-          <EnabledFlag>0</EnabledFlag>
-          <Address>1312</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\Starter_Files_V1\source\main.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\RTOSDemo\Starter_Files_V1/source/main.c\199</Expression>
+          <Expression></Expression>
         </Bp>
         <Bp>
           <Number>4</Number>
           <Type>0</Type>
-          <LineNumber>229</LineNumber>
+          <LineNumber>261</LineNumber>
           <EnabledFlag>0</EnabledFlag>
-          <Address>1380</Address>
+          <Address>1388</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -404,14 +404,14 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>.\Starter_Files_V1\source\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\RTOSDemo\Starter_Files_V1/source/main.c\229</Expression>
+          <Expression></Expression>
         </Bp>
         <Bp>
           <Number>5</Number>
           <Type>0</Type>
-          <LineNumber>201</LineNumber>
+          <LineNumber>236</LineNumber>
           <EnabledFlag>0</EnabledFlag>
-          <Address>1314</Address>
+          <Address>1348</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -420,14 +420,14 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>.\Starter_Files_V1\source\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\RTOSDemo\Starter_Files_V1/source/main.c\201</Expression>
+          <Expression></Expression>
         </Bp>
         <Bp>
           <Number>6</Number>
           <Type>0</Type>
-          <LineNumber>203</LineNumber>
+          <LineNumber>233</LineNumber>
           <EnabledFlag>0</EnabledFlag>
-          <Address>1328</Address>
+          <Address>1346</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -436,44 +436,44 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>.\Starter_Files_V1\source\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\RTOSDemo\Starter_Files_V1/source/main.c\203</Expression>
+          <Expression></Expression>
         </Bp>
         <Bp>
           <Number>7</Number>
           <Type>0</Type>
-          <LineNumber>190</LineNumber>
+          <LineNumber>238</LineNumber>
           <EnabledFlag>0</EnabledFlag>
-          <Address>1288</Address>
+          <Address>0</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
+          <BreakIfRCount>0</BreakIfRCount>
           <Filename>.\Starter_Files_V1\source\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\RTOSDemo\Starter_Files_V1/source/main.c\190</Expression>
+          <Expression></Expression>
         </Bp>
         <Bp>
           <Number>8</Number>
           <Type>0</Type>
-          <LineNumber>192</LineNumber>
+          <LineNumber>267</LineNumber>
           <EnabledFlag>0</EnabledFlag>
-          <Address>1302</Address>
+          <Address>0</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
+          <BreakIfRCount>0</BreakIfRCount>
           <Filename>.\Starter_Files_V1\source\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\RTOSDemo\Starter_Files_V1/source/main.c\192</Expression>
+          <Expression></Expression>
         </Bp>
         <Bp>
           <Number>9</Number>
           <Type>0</Type>
-          <LineNumber>205</LineNumber>
+          <LineNumber>319</LineNumber>
           <EnabledFlag>0</EnabledFlag>
           <Address>0</Address>
           <ByteObject>0</ByteObject>
@@ -495,7 +495,7 @@
         <periodic>1</periodic>
         <aLwin>0</aLwin>
         <aCover>0</aCover>
-        <aSer1>1</aSer1>
+        <aSer1>0</aSer1>
         <aSer2>1</aSer2>
         <aPa>0</aPa>
         <viewmode>1</viewmode>
@@ -505,7 +505,7 @@
         <AscS1>0</AscS1>
         <AscS2>0</AscS2>
         <AscS3>0</AscS3>
-        <aSer3>1</aSer3>
+        <aSer3>0</aSer3>
         <eProf>0</eProf>
         <aLa>1</aLa>
         <aPa1>0</aPa1>
@@ -532,18 +532,8 @@
       <LogicAnalyzers>
         <Wi>
           <IntNumber>0</IntNumber>
-          <FirstString>((PORT0 &amp; 0x00080000) &gt;&gt; 19 &amp; 0x80000) &gt;&gt; 19</FirstString>
-          <SecondString>000000000000000000000000000000000000F03F0100000000000000000000000000000028504F5254302026203078303030383030303029203E3E20313900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000010000008055292EF8B0D33F1100000000000000000000000000000000000000CC050000</SecondString>
-        </Wi>
-        <Wi>
-          <IntNumber>1</IntNumber>
-          <FirstString>((PORT0 &amp; 0x00100000) &gt;&gt; 20 &amp; 0x100000) &gt;&gt; 20</FirstString>
-          <SecondString>8080FF0000000000000000000000E0FFFFFFEF410100000000000000000000000000000028504F5254302026203078303031303030303029203E3E20323000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000020000003FB31F2A823BD13F11000000000000000000000000000000000000007E050000</SecondString>
-        </Wi>
-        <Wi>
-          <IntNumber>2</IntNumber>
-          <FirstString>((PORT0 &amp; 0x00040000) &gt;&gt; 18 &amp; 0x40000) &gt;&gt; 18</FirstString>
-          <SecondString>0000800000000000000000000000E0FFFFFFEF410100000000000000000000000000000028504F5254302026203078303030343030303029203E3E2031380000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000003000000C7711CC7711CD73F1100000000000000000000000000000000000000C8050000</SecondString>
+          <FirstString>((PORT0 &amp; 0x00800000) &gt;&gt; 23 &amp; 0x800000) &gt;&gt; 23</FirstString>
+          <SecondString>0080000000000000000000000000E0FFFFFFEF410100000000000000000000000000000028504F5254302026203078303038303030303029203E3E2032330000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000001000000000000000000F03F06000000000000000000000000000000000000002A060000</SecondString>
         </Wi>
       </LogicAnalyzers>
     </TargetOption>
