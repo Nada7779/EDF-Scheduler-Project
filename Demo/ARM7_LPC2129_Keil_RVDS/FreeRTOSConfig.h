@@ -47,7 +47,7 @@
 
 #define configUSE_PREEMPTION		1
 #define configUSE_IDLE_HOOK			1
-#define configUSE_TICK_HOOK			0
+#define configUSE_TICK_HOOK			1
 #define configCPU_CLOCK_HZ			( ( unsigned long ) 60000000 )	/* =12.0MHz xtal multiplied by 5 using the PLL. */
 #define configTICK_RATE_HZ			( ( TickType_t ) 1000 )
 #define configMAX_PRIORITIES		( 4 )
@@ -125,45 +125,51 @@ to exclude the API function. */
 																	{																																				\
 																		T1_Out_Time = T1TC;																										\
 																		T1_Total_Time += T1_Out_Time - T1_In_Time;														\
+																		T1_Execution_Time = T1_Out_Time - T1_In_Time ;										    \
 																	}																																				\
 																	else if( PIN3 == (int)pxCurrentTCB->pxTaskTag )													\
 																	{																																				\
 																		T2_Out_Time = T1TC;																										\
 																		T2_Total_Time += T2_Out_Time - T2_In_Time;														\
+																		T2_Execution_Time = T2_Out_Time - T2_In_Time ;										    \
 																	}																																				\
 																	else if( PIN4 == (int)pxCurrentTCB->pxTaskTag )													\
 																	{																																				\
 																		T3_Out_Time = T1TC;																										\
 																		T3_Total_Time += T3_Out_Time - T3_In_Time;														\
+																		T3_Execution_Time = T3_Out_Time - T3_In_Time ;                         \
 																	}																																				\
 																	else if( PIN5 == (int)pxCurrentTCB->pxTaskTag )													\
 																	{																																				\
 																		T4_Out_Time = T1TC;																										\
 																		T4_Total_Time += T4_Out_Time - T4_In_Time;														\
+																	 T4_Execution_Time = T4_Out_Time - T4_In_Time ;                         \
 																	}																																				\
 																	else if( PIN6 == (int)pxCurrentTCB->pxTaskTag )													\
 																	{																																				\
 																		T5_Out_Time = T1TC;																										\
 																		T5_Total_Time += T5_Out_Time - T5_In_Time;														\
+																		T5_Execution_Time = T5_Out_Time - T5_In_Time ;                         \
 																	}																																				\
 																	else if( PIN7 == (int)pxCurrentTCB->pxTaskTag )													\
 																	{																																				\
 																		T6_Out_Time = T1TC;																										\
 																		T6_Total_Time += T6_Out_Time - T6_In_Time;														\
+																    T6_Execution_Time = T6_Out_Time - T6_In_Time ;                         \
 																	}																																				\
 																	else{}																																	\
 																	GPIO_write(PORT_0, (int)pxCurrentTCB->pxTaskTag, PIN_IS_LOW );					\
 																																																					\
 																}																																					\
 
-extern int T1_In_Time , T1_Out_Time , T1_Total_Time ;
-extern int T2_In_Time , T2_Out_Time , T2_Total_Time ;
-extern int T3_In_Time , T3_Out_Time , T3_Total_Time ;
-extern int T4_In_Time , T4_Out_Time , T4_Total_Time ;
-extern int T5_In_Time , T5_Out_Time , T5_Total_Time ;
-extern int T6_In_Time , T6_Out_Time , T6_Total_Time ;
 
 
+ extern int T1_In_Time , T1_Out_Time , T1_Total_Time ,T1_Execution_Time;
+ extern int T2_In_Time , T2_Out_Time , T2_Total_Time ,T2_Execution_Time;
+ extern int T3_In_Time , T3_Out_Time , T3_Total_Time ,T3_Execution_Time;
+ extern int T4_In_Time , T4_Out_Time , T4_Total_Time ,T4_Execution_Time;
+ extern int T5_In_Time , T5_Out_Time , T5_Total_Time ,T5_Execution_Time;
+ extern int T6_In_Time , T6_Out_Time , T6_Total_Time ,T6_Execution_Time;
 
 /*****************************************************************************/
 
