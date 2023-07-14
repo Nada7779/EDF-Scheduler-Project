@@ -2576,7 +2576,6 @@ TCB_t *pxTCB;
                 uxTask += prvListTasksWithinSingleList(&(pxTaskStatusArray[uxTask]), &(pxReadyTasksLists[uxQueue]), eReady);
             } while (uxQueue > (UBaseType_t)tskIDLE_PRIORITY); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
 		  #endif
-
 				/* Fill in an TaskStatus_t structure with information on each
 				task in the Blocked state. */
 				uxTask += prvListTasksWithinSingleList( &( pxTaskStatusArray[ uxTask ] ), ( List_t * ) pxDelayedTaskList, eBlocked );
@@ -2624,7 +2623,6 @@ TCB_t *pxTCB;
 			}
 		}
 		( void ) xTaskResumeAll();
-
 		return uxTask;
 	}
 
@@ -3530,39 +3528,8 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
 			}
 			#else
 			{
-				/* Get address of the ReadyList */
-				List_t *pxList = &(xReadyTasksListEDF);
-				ListItem_t *pxIterator = listGET_HEAD_ENTRY(pxList);
-				
-				/* Add variables to add be used */
-				UBaseType_t listCounter = 0;
-				UBaseType_t index = 0;
-				
-				TickType_t currentTick;
-				TickType_t xFarthestPeriod;
-				
-				//ListItem_t *head = pxIterator;
 
-				/* Get the list length */
-				listCounter = listCURRENT_LIST_LENGTH(pxList);
-				
-				for( index = 0; index < listCounter; index++ )
-				{
-					// Set the idle task's time counter to the farthest deadline
-					TCB_t *pxTCB = (TCB_t *)listGET_LIST_ITEM_OWNER(pxIterator);
-					xFarthestPeriod = pxTCB->xTaskPeriod;
-					
-					pxIterator = listGET_NEXT(pxIterator);
-				}
-				
-				
-//			  TCB_t *pxTCB = (TCB_t *)listGET_LIST_ITEM_OWNER(pxIterator);
-//        TickType_t xFarthestPeriod = pxTCB->xTaskPeriod;
-				
-        currentTick = xTaskGetTickCount();
-				
-				listSET_LIST_ITEM_VALUE( &( ( pxCurrentTCB )->xStateListItem ), xFarthestPeriod + currentTick );
-				
+				listSET_LIST_ITEM_VALUE( &( ( xIdleTaskHandle )->xStateListItem ), ( xIdleTaskHandle )->xTaskPeriod + xTaskGetTickCount() );
 				taskYIELD();
 			}
 			#endif

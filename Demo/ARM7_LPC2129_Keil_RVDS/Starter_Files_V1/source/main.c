@@ -86,8 +86,6 @@ TaskHandle_t Uart_Receiver_Handler = NULL;
 TaskHandle_t Load_1_Simulation_Handler = NULL;
 TaskHandle_t Load_2_Simulation_Handler = NULL;
 
-TaskHandle_t Tasks_Status_Handler = NULL;
-
 #define BTN1_PRIODICITY     50
 #define BTN2_PRIODICITY     50
 #define TR_PRIODICITY       100
@@ -95,7 +93,11 @@ TaskHandle_t Tasks_Status_Handler = NULL;
 #define LOAD1_PRIODICITY    10  
 #define LOAD2_PRIODICITY    100
 
+#define ENABLE_DEPUG_FEATURE  	1
 
+#define DISABLE_DEPUG_FEATURE		0
+
+#define PRINT_TASK_STATUS_SUMMERY  DISABLE_DEPUG_FEATURE
 
 
 /* Semaphore object */
@@ -138,7 +140,6 @@ static void prvSetupHardware( void );
 #define LOAD2_PRIODICITY    100
 
 
-<<<<<<< Updated upstream
 
 /* Tasks Tags */
 #define BTN1_TAG    PIN4
@@ -149,20 +150,13 @@ static void prvSetupHardware( void );
 #define LOAD2_TAG   PIN7
 #define TICK_TAG    PIN8
 #define IDLE_TAG    PIN9
+#define Buffer_Size		150
 
-
-=======
-#define ENABLE_DEPUG_FEATURE  	1
-#define DISNABLE_DEPUG_FEATURE  1
-
-#define PRINT_TASK_STATUS_SUMMERY  ENABLE_DEPUG_FEATURE
->>>>>>> Stashed changes
 /* TaskS to be created */
 
 
 
 /***********************************************/
-<<<<<<< Updated upstream
  int T1_In_Time , T1_Out_Time , T1_Total_Time ,T1_Execution_Time;
  int T2_In_Time , T2_Out_Time , T2_Total_Time ,T2_Execution_Time;
  int T3_In_Time , T3_Out_Time , T3_Total_Time ,T3_Execution_Time;
@@ -171,16 +165,8 @@ static void prvSetupHardware( void );
  int T6_In_Time , T6_Out_Time , T6_Total_Time ,T6_Execution_Time;
 int currentTickSystem = 0 ;
 int CPU_LOAD = 0 ;
-=======
- int T1_In_Time , T1_Out_Time , T1_Total_Time ;
- int T2_In_Time , T2_Out_Time , T2_Total_Time ;
- int T3_In_Time , T3_Out_Time , T3_Total_Time ;
- int T4_In_Time , T4_Out_Time , T4_Total_Time ;
- int T5_In_Time , T5_Out_Time , T5_Total_Time ;
- int T6_In_Time , T6_Out_Time , T6_Total_Time ;
 
- char chArr_g_buffer[150]={0};
->>>>>>> Stashed changes
+char chArr_g_buffer[Buffer_Size]={0};
 /**********************************************/
 
 /* BUTTON_1_TASK  to detect the button 1 on (port 0 pin0) rising and falling edges  Every edge is an event that will be sent to a consumer_task */
@@ -266,8 +252,7 @@ void Button_2_Monitor (void * pvParameters)
 					xQueueSend(gl_queue_handle,&lc_ptr_ch_button_1_falling,portMAX_DELAY);
 					
            lc_u8_button_pressed=RELEASED;
-				}		
-				
+				}				
 					vTaskDelayUntil(&xLastWakeTime, xFrequency);
 	}
 }
@@ -287,21 +272,14 @@ void Periodic_Transmitter (void * pvParameters)
 	for( ;; )
 	{
 	
-     xQueueSend(gl_queue_handle,&lc_ptr_ch_send_string,portMAX_DELAY);
-		
-		//vTaskDelay(SEND_DELAY);
-		
-	#if (PRINT_TASK_STATUS_SUMMERY==ENABLE_DEPUG_FEATURE)
-		
-  	vTaskGetRunTimeStats(chArr_g_buffer);
-	
-	  vSerialPutString((const signed char*)chArr_g_buffer,150);
-	
-	  xSerialPutChar('\n');
-	#endif
-		vTaskDelayUntil(&xLastWakeTime, xFrequency);
+      xQueueSend(gl_queue_handle,&lc_ptr_ch_send_string,portMAX_DELAY);
 
+		//vTaskDelay(SEND_DELAY);
+		vTaskDelayUntil(&xLastWakeTime, xFrequency);
 	}
+	
+	
+	
 }
 /* This task will send the strings recieved from buttons and send tasks to the uart */
 void Uart_Receiver (void * pvParameters)
@@ -328,7 +306,8 @@ void Uart_Receiver (void * pvParameters)
 		
 		if (xQueueReceive(gl_queue_handle,&lc_ptr_ch_receive_string,0) == pdPASS )
 
-		{vSerialPutString((const signed char*)lc_ptr_ch_receive_string,STRING_SIZE);}
+		{
+		vSerialPutString((const signed char*)lc_ptr_ch_receive_string,STRING_SIZE);}
 		
 				vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
@@ -354,6 +333,7 @@ void Load_1_Simulation (void * pvParameters)
 		{
 			;
 		}
+		
 
 			vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
@@ -366,7 +346,7 @@ void Load_2_Simulation (void * pvParameters)
 {	
 	
 	 int i=0; 
-	
+
 		TickType_t xLastWakeTime;
 	const TickType_t xFrequency = LOAD2_PRIODICITY;
 	
@@ -383,19 +363,19 @@ void Load_2_Simulation (void * pvParameters)
 		{
 			;
 		}
-
-<<<<<<< Updated upstream
-			vTaskDelayUntil(&xLastWakeTime, xFrequency);
-=======
-		vTaskDelayUntil(&xLastWakeTime, xFrequency);
-
 		
+		#if (PRINT_TASK_STATUS_SUMMERY==ENABLE_DEPUG_FEATURE)
+		
+  	vTaskGetRunTimeStats(chArr_g_buffer);
+	
+	  vSerialPutString((const signed char*)chArr_g_buffer,150);
+	
+	  xSerialPutChar('\n');
+	#endif
 
->>>>>>> Stashed changes
+			vTaskDelayUntil(&xLastWakeTime, xFrequency);
 	}
 }
-
-
 
 /* Application tick hook callout */
 void vApplicationTickHook (void)
@@ -420,57 +400,9 @@ void vApplicationIdleHook (void)
 	}
 
 
-}
+	}
 	
 
-<<<<<<< Updated upstream
-=======
-
-//void vTaskStatusReport(void * pvParameters)
-//	
-//{
-//	TickType_t xLastWakeTime;
-//	
-//	const TickType_t xFrequency = LOAD2_PRIODICITY;
-//	
-//	/* init the xLastWakeTime with the current time */
-//	xLastWakeTime = xTaskGetTickCount();
-//	
-//	vTaskGetRunTimeStats(chArr_g_buffer);
-//	
-//	vSerialPutString((const signed char*)chArr_g_buffer,150);
-//	
-//	xSerialPutChar('\n');
-//	
-//	vTaskDelayUntil(&xLastWakeTime, xFrequency);
-//}
-//	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-/* Application idle hook callout */
-//void vApplicationIdleHook (void)
-//{
-
-//static int TagInit = 0;
-//	
-//	if(0 == TagInit)
-//	{
-//	vTaskSetApplicationTaskTag( NULL, (void*) PIN6);
-//	
-//	TagInit = 1;
-//	}
-//	
-//}
-
->>>>>>> Stashed changes
 /*****************************************************************/
 
 extern BaseType_t  xTaskPeriodicCreate(	TaskFunction_t pxTaskCode,
@@ -486,7 +418,6 @@ extern BaseType_t  xTaskPeriodicCreate(	TaskFunction_t pxTaskCode,
  */
 int main( void )
 {
-	
 	/* Setup the hardware for use with the Keil demo board. */
 	prvSetupHardware();
 		/* Create queue */
@@ -557,8 +488,6 @@ int main( void )
 		           &Periodic_Transmitter_Handler,    /* task's handler */
 							  100                     /*used to pass task periodicity */
 );
-							 
-		 
 
 							 /* create Load_2_Simulation */  
 
