@@ -139,13 +139,14 @@ static void prvSetupHardware( void );
 
 
 /***********************************************/
- int T1_In_Time , T1_Out_Time , T1_Total_Time ;
- int T2_In_Time , T2_Out_Time , T2_Total_Time ;
- int T3_In_Time , T3_Out_Time , T3_Total_Time ;
- int T4_In_Time , T4_Out_Time , T4_Total_Time ;
- int T5_In_Time , T5_Out_Time , T5_Total_Time ;
- int T6_In_Time , T6_Out_Time , T6_Total_Time ;
-
+ int T1_In_Time , T1_Out_Time , T1_Total_Time ,T1_Execution_Time;
+ int T2_In_Time , T2_Out_Time , T2_Total_Time ,T2_Execution_Time;
+ int T3_In_Time , T3_Out_Time , T3_Total_Time ,T3_Execution_Time;
+ int T4_In_Time , T4_Out_Time , T4_Total_Time ,T4_Execution_Time;
+ int T5_In_Time , T5_Out_Time , T5_Total_Time ,T5_Execution_Time;
+ int T6_In_Time , T6_Out_Time , T6_Total_Time ,T6_Execution_Time;
+int currentTickSystem = 0 ;
+int CPU_LOAD = 0 ;
 /**********************************************/
 
 /* BUTTON_1_TASK  to detect the button 1 on (port 0 pin0) rising and falling edges  Every edge is an event that will be sent to a consumer_task */
@@ -163,7 +164,7 @@ void Button_1_Monitor (void * pvParameters)
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = BTN1_PRIODICITY;
 	
-vTaskSetApplicationTaskTag( NULL, (void*) PIN2);
+	vTaskSetApplicationTaskTag( NULL, (void*) PIN2);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
@@ -183,8 +184,10 @@ vTaskSetApplicationTaskTag( NULL, (void*) PIN2);
 					xQueueSend(gl_queue_handle,&lc_ptr_ch_button_1_falling,portMAX_DELAY);
 					
            lc_u8_button_pressed=RELEASED;
-				}				
+				}	
+				
 		
+
 				vTaskDelayUntil(&xLastWakeTime, xFrequency);
 				
 
@@ -214,6 +217,8 @@ void Button_2_Monitor (void * pvParameters)
 	
 	for( ;; )
 	{
+		
+		
 /* Task Code*/
 		lc_u8_button_state= GPIO_read(BUTTON_2_PORT, BUTTON_2_PIN);
 				if (lc_u8_button_state == PIN_IS_HIGH && lc_u8_button_pressed==RELEASED )
@@ -275,7 +280,7 @@ void Uart_Receiver (void * pvParameters)
 	xLastWakeTime = xTaskGetTickCount();
 	for( ;; )
 	{
-     xQueueReceive(gl_queue_handle,&lc_ptr_ch_receive_string,portMAX_DELAY);
+     xQueueReceive(gl_queue_handle,&lc_ptr_ch_receive_string,0);
 		
 		vSerialPutString((const signed char*)lc_ptr_ch_receive_string,STRING_SIZE);
 		
@@ -347,7 +352,8 @@ void vApplicationTickHook (void)
 	GPIO_write(PORT_0,PIN8,PIN_IS_HIGH);
 	
 	GPIO_write(PORT_0,PIN8,PIN_IS_LOW);
-	
+	currentTickSystem = T1TC ;
+	CPU_LOAD = (float)(T1_Total_Time+T2_Total_Time+T3_Total_Time +T4_Total_Time +T5_Total_Time +T6_Total_Time)/(float) currentTickSystem *100;
 }
 
 /* Application idle hook callout */
