@@ -103,7 +103,7 @@
           <StopOnExitCode>3</StopOnExitCode>
           <CustomArgument></CustomArgument>
           <IncludeLibraryModules></IncludeLibraryModules>
-          <ComprImg>1</ComprImg>
+          <ComprImg>0</ComprImg>
         </CommonProperty>
         <DllOption>
           <SimDllName>SARM.DLL</SimDllName>
@@ -133,7 +133,7 @@
             <RestoreFunctions>1</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
-            <RestoreSysVw>1</RestoreSysVw>
+            <RestoreSysVw>0</RestoreSysVw>
           </Simulator>
           <Target>
             <UseTarget>1</UseTarget>
@@ -145,7 +145,7 @@
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>0</RestoreTracepoints>
-            <RestoreSysVw>1</RestoreSysVw>
+            <RestoreSysVw>0</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>0</TargetSelection>
@@ -365,10 +365,10 @@
             <uC99>0</uC99>
             <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>1</v6Lang>
-            <v6LangP>1</v6LangP>
-            <vShortEn>1</vShortEn>
-            <vShortWch>1</vShortWch>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
+            <vShortEn>0</vShortEn>
+            <vShortWch>0</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
@@ -431,29 +431,19 @@
               <FilePath>.\ParTest\ParTest.c</FilePath>
             </File>
             <File>
-              <FileName>serialISR.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\serial\serialISR.s</FilePath>
-            </File>
-            <File>
-              <FileName>GPIO.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Starter_Files_V1\source\GPIO.c</FilePath>
-            </File>
-            <File>
-              <FileName>GPIO_cfg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Starter_Files_V1\source\GPIO_cfg.c</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Starter_Files_V1\source\main.c</FilePath>
+              <FilePath>.\main.c</FilePath>
             </File>
             <File>
               <FileName>serial.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Starter_Files_V1\source\serial.c</FilePath>
+              <FilePath>.\serial\serial.c</FilePath>
+            </File>
+            <File>
+              <FileName>serialISR.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\serial\serialISR.s</FilePath>
             </File>
           </Files>
         </Group>
@@ -489,6 +479,41 @@
               <FileName>portASM.s</FileName>
               <FileType>2</FileType>
               <FilePath>..\..\Source\portable\RVDS\ARM7_LPC21xx\portASM.s</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Stadard Demo</GroupName>
+          <Files>
+            <File>
+              <FileName>flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Common\Minimal\flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>comtest.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Common\Minimal\comtest.c</FilePath>
+            </File>
+            <File>
+              <FileName>BlockQ.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Common\Minimal\BlockQ.c</FilePath>
+            </File>
+            <File>
+              <FileName>dynamic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Common\Minimal\dynamic.c</FilePath>
+            </File>
+            <File>
+              <FileName>PollQ.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Common\Minimal\PollQ.c</FilePath>
+            </File>
+            <File>
+              <FileName>semtest.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Common\Minimal\semtest.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -592,7 +617,7 @@
           <StopOnExitCode>3</StopOnExitCode>
           <CustomArgument></CustomArgument>
           <IncludeLibraryModules></IncludeLibraryModules>
-          <ComprImg>1</ComprImg>
+          <ComprImg>0</ComprImg>
         </CommonProperty>
         <DllOption>
           <SimDllName>SARM.DLL</SimDllName>
@@ -613,7 +638,7 @@
             <Oh166RecLen>16</Oh166RecLen>
           </OPTHX>
           <Simulator>
-            <UseSimulator>1</UseSimulator>
+            <UseSimulator>0</UseSimulator>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -622,10 +647,10 @@
             <RestoreFunctions>1</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
-            <RestoreSysVw>1</RestoreSysVw>
+            <RestoreSysVw>0</RestoreSysVw>
           </Simulator>
           <Target>
-            <UseTarget>0</UseTarget>
+            <UseTarget>1</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -634,10 +659,10 @@
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>0</RestoreTracepoints>
-            <RestoreSysVw>1</RestoreSysVw>
+            <RestoreSysVw>0</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>0</TargetSelection>
+          <TargetSelection>16</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -854,10 +879,10 @@
             <uC99>0</uC99>
             <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>1</v6Lang>
-            <v6LangP>1</v6LangP>
-            <vShortEn>1</vShortEn>
-            <vShortWch>1</vShortWch>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
+            <vShortEn>0</vShortEn>
+            <vShortWch>0</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
@@ -865,7 +890,7 @@
               <MiscControls></MiscControls>
               <Define>ARM7_LPC21xx_KEIL_RVDS KEIL_THUMB_INTERWORK</Define>
               <Undefine></Undefine>
-              <IncludePath>.;..\..\Source\portable\RVDS\ARM7_LPC21xx;.\Starter_Files_V1\header;.\Starter_Files_V1\lib;..\Common\include;..\..\Source\include</IncludePath>
+              <IncludePath>.;..\..\Source\portable\RVDS\ARM7_LPC21xx;..\Common\include;..\..\Source\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -920,29 +945,19 @@
               <FilePath>.\ParTest\ParTest.c</FilePath>
             </File>
             <File>
-              <FileName>serialISR.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\serial\serialISR.s</FilePath>
-            </File>
-            <File>
-              <FileName>GPIO.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Starter_Files_V1\source\GPIO.c</FilePath>
-            </File>
-            <File>
-              <FileName>GPIO_cfg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Starter_Files_V1\source\GPIO_cfg.c</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Starter_Files_V1\source\main.c</FilePath>
+              <FilePath>.\main.c</FilePath>
             </File>
             <File>
               <FileName>serial.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Starter_Files_V1\source\serial.c</FilePath>
+              <FilePath>.\serial\serial.c</FilePath>
+            </File>
+            <File>
+              <FileName>serialISR.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\serial\serialISR.s</FilePath>
             </File>
           </Files>
         </Group>
@@ -978,6 +993,41 @@
               <FileName>portASM.s</FileName>
               <FileType>2</FileType>
               <FilePath>..\..\Source\portable\RVDS\ARM7_LPC21xx\portASM.s</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Stadard Demo</GroupName>
+          <Files>
+            <File>
+              <FileName>flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Common\Minimal\flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>comtest.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Common\Minimal\comtest.c</FilePath>
+            </File>
+            <File>
+              <FileName>BlockQ.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Common\Minimal\BlockQ.c</FilePath>
+            </File>
+            <File>
+              <FileName>dynamic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Common\Minimal\dynamic.c</FilePath>
+            </File>
+            <File>
+              <FileName>PollQ.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Common\Minimal\PollQ.c</FilePath>
+            </File>
+            <File>
+              <FileName>semtest.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Common\Minimal\semtest.c</FilePath>
             </File>
           </Files>
         </Group>
