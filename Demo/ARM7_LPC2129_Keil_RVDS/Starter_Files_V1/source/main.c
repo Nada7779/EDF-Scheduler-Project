@@ -134,6 +134,20 @@ static void prvSetupHardware( void );
 #define UART_PRIODICITY     20  
 #define LOAD1_PRIODICITY    10  
 #define LOAD2_PRIODICITY    100
+
+
+
+/* Tasks Tags */
+#define BTN1_TAG    PIN4
+#define BTN2_TAG    PIN5
+#define TR_TAG      PIN6
+#define UART_TAG    PIN3  
+#define LOAD1_TAG   PIN2  
+#define LOAD2_TAG   PIN7
+#define TICK_TAG    PIN8
+#define IDLE_TAG    PIN9
+
+
 /* TaskS to be created */
 
 
@@ -164,7 +178,7 @@ void Button_1_Monitor (void * pvParameters)
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = BTN1_PRIODICITY;
 	
-	vTaskSetApplicationTaskTag( NULL, (void*) PIN2);
+	vTaskSetApplicationTaskTag( NULL, (void*) BTN1_TAG);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
@@ -208,7 +222,7 @@ void Button_2_Monitor (void * pvParameters)
 	
 		TickType_t xLastWakeTime;
 	const TickType_t xFrequency = BTN2_PRIODICITY;
-		vTaskSetApplicationTaskTag( NULL, (void*) PIN3);
+		vTaskSetApplicationTaskTag( NULL, (void*) BTN2_TAG);
 
 	
 	/* init the xLastWakeTime with the current time */
@@ -244,7 +258,7 @@ void Periodic_Transmitter (void * pvParameters)
 	
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = TR_PRIODICITY;
-	vTaskSetApplicationTaskTag( NULL, (void*) PIN4);
+	vTaskSetApplicationTaskTag( NULL, (void*) TR_TAG);
 	
 	
 	/* init the xLastWakeTime with the current time */
@@ -269,7 +283,7 @@ void Uart_Receiver (void * pvParameters)
 	const TickType_t xFrequency = UART_PRIODICITY;
 //	vTaskSetApplicationTaskTag( NULL, (void*) PIN7);
 	
-	vTaskSetApplicationTaskTag( NULL, (void*) PIN5);
+	vTaskSetApplicationTaskTag( NULL, (void*) UART_TAG);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
@@ -280,9 +294,11 @@ void Uart_Receiver (void * pvParameters)
 	xLastWakeTime = xTaskGetTickCount();
 	for( ;; )
 	{
-     xQueueReceive(gl_queue_handle,&lc_ptr_ch_receive_string,0);
+     //xQueueReceive(gl_queue_handle,&lc_ptr_ch_receive_string,0);
 		
-		vSerialPutString((const signed char*)lc_ptr_ch_receive_string,STRING_SIZE);
+		if (xQueueReceive(gl_queue_handle,&lc_ptr_ch_receive_string,0) == pdPASS )
+
+		{vSerialPutString((const signed char*)lc_ptr_ch_receive_string,STRING_SIZE);}
 		
 				vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
@@ -296,7 +312,7 @@ void Load_1_Simulation (void * pvParameters)
 
 		TickType_t xLastWakeTime;
 	const TickType_t xFrequency = LOAD1_PRIODICITY;
-		vTaskSetApplicationTaskTag( NULL, (void*) PIN6);
+		vTaskSetApplicationTaskTag( NULL, (void*) LOAD1_TAG);
 	
 	
 	
@@ -324,7 +340,7 @@ void Load_2_Simulation (void * pvParameters)
 		TickType_t xLastWakeTime;
 	const TickType_t xFrequency = LOAD2_PRIODICITY;
 	
-	vTaskSetApplicationTaskTag( NULL, (void*) PIN7);
+	vTaskSetApplicationTaskTag( NULL, (void*) LOAD2_TAG);
 	
 	
 	
@@ -339,9 +355,6 @@ void Load_2_Simulation (void * pvParameters)
 		}
 
 			vTaskDelayUntil(&xLastWakeTime, xFrequency);
-
-		
-
 	}
 }
 
@@ -349,7 +362,7 @@ void Load_2_Simulation (void * pvParameters)
 void vApplicationTickHook (void)
 {
 
-	GPIO_write(PORT_0,PIN8,PIN_IS_HIGH);
+	GPIO_write(PORT_0,TICK_TAG,PIN_IS_HIGH);
 	
 	GPIO_write(PORT_0,PIN8,PIN_IS_LOW);
 	currentTickSystem = T1TC ;
@@ -363,41 +376,13 @@ void vApplicationIdleHook (void)
 	
 	if(S_U8_LV_TagInit	==	0)
 	{
-		vTaskSetApplicationTaskTag( NULL, (void*) PIN9);
+		vTaskSetApplicationTaskTag( NULL, (void*) IDLE_TAG);
 		S_U8_LV_TagInit=1;
 	}
 
 
 	}
 	
-
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-/* Application idle hook callout */
-//void vApplicationIdleHook (void)
-//{
-
-//static int TagInit = 0;
-//	
-//	if(0 == TagInit)
-//	{
-//	vTaskSetApplicationTaskTag( NULL, (void*) PIN6);
-//	
-//	TagInit = 1;
-//	}
-//	
-//}
 
 /*****************************************************************/
 
