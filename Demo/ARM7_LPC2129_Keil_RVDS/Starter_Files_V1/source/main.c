@@ -97,7 +97,7 @@ TaskHandle_t Load_2_Simulation_Handler = NULL;
 
 #define DISABLE_DEPUG_FEATURE		0
 
-#define PRINT_TASK_STATUS_SUMMERY  DISABLE_DEPUG_FEATURE
+#define PRINT_TASK_STATUS_SUMMERY  ENABLE_DEPUG_FEATURE
 
 
 /* Semaphore object */
@@ -367,10 +367,10 @@ void Load_2_Simulation (void * pvParameters)
 		#if (PRINT_TASK_STATUS_SUMMERY==ENABLE_DEPUG_FEATURE)
 		
   	vTaskGetRunTimeStats(chArr_g_buffer);
-	
+	  xSerialPutChar('\n');
 	  vSerialPutString((const signed char*)chArr_g_buffer,150);
 	
-	  xSerialPutChar('\n');
+	 
 	#endif
 
 			vTaskDelayUntil(&xLastWakeTime, xFrequency);
