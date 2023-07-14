@@ -61,10 +61,18 @@
 #define configUSE_APPLICATION_TASK_TAG   1
 #define configUSE_TIME_SLICING 		1
 #define configQUEUE_REGISTRY_SIZE 	0
+
+#define configUSE_STATS_FORMATTING_FUNCTIONS  1
+#define configGENERATE_RUN_TIME_STATS  1
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()  
+#define portGET_RUN_TIME_COUNTER_VALUE() (T1TC)
+
+
 /**********************EDF***************************************/
 #define configUSE_EDF_SCHEDULER		      	  1
 #define configUSE_APPLICATION_TASK_TAG			1
 
+//#define configGENERATE_RUN_TIME_STATS  1
 
 /**********************************************************************/
 /* Co-routine definitions. */

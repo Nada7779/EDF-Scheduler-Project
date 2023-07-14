@@ -2566,12 +2566,16 @@ TCB_t *pxTCB;
 			{
 				/* Fill in an TaskStatus_t structure with information on each
 				task in the Ready state. */
-				do
-				{
-					uxQueue--;
-					uxTask += prvListTasksWithinSingleList( &( pxTaskStatusArray[ uxTask ] ), &( pxReadyTasksLists[ uxQueue ] ), eReady );
+			#if (configUSE_EDF_SCHEDULER == 1)
 
-				} while( uxQueue > ( UBaseType_t ) tskIDLE_PRIORITY ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
+            uxTask += prvListTasksWithinSingleList(&(pxTaskStatusArray[uxTask]), &(xReadyTasksListEDF), eReady);
+			#else
+            do
+            {	
+                uxQueue--;
+                uxTask += prvListTasksWithinSingleList(&(pxTaskStatusArray[uxTask]), &(pxReadyTasksLists[uxQueue]), eReady);
+            } while (uxQueue > (UBaseType_t)tskIDLE_PRIORITY); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
+		  #endif
 
 				/* Fill in an TaskStatus_t structure with information on each
 				task in the Blocked state. */
@@ -3558,6 +3562,7 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
         currentTick = xTaskGetTickCount();
 				
 				listSET_LIST_ITEM_VALUE( &( ( pxCurrentTCB )->xStateListItem ), xFarthestPeriod + currentTick );
+				
 				taskYIELD();
 			}
 			#endif
