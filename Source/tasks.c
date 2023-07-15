@@ -215,6 +215,7 @@ count overflows. */
  * Place the task represented by pxTCB into the appropriate ready list for
  * the task.  It is inserted at the end of the list.
  */
+/****************************EDF Step 3******************************************/
 #if (configUSE_EDF_SCHEDULER == 0)
 #define prvAddTaskToReadyList( pxTCB )																\
 	traceMOVED_TASK_TO_READY_STATE( pxTCB );														\
@@ -225,6 +226,7 @@ count overflows. */
 #define prvAddTaskToReadyList( pxTCB ) /*xStateListItem must contain the deadline value */ \
 vListInsert( &(xReadyTasksListEDF), &(( pxTCB )->xStateListItem ))
 #endif
+/**************************************************************************************/
 /*-----------------------------------------------------------*/
 
 /*
@@ -267,13 +269,13 @@ typedef struct tskTaskControlBlock {			/* The old naming convention is used to p
 	UBaseType_t			uxPriority;			/*< The priority of the task.  0 is the lowest priority. */
 	StackType_t			*pxStack;			/*< Points to the start of the stack. */
 	char				pcTaskName[ configMAX_TASK_NAME_LEN ];/*< Descriptive name given to the task when created.  Facilitates debugging only. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
-	
+	/********************************EDF Step 4**********************************************/
 	#if ( configUSE_EDF_SCHEDULER == 1 )
  TickType_t xTaskPeriod; /*< Stores the period in tick of the task. > */
  
 //ListItem_t  xGenericListItem;
  #endif
-	
+	/**********************************************************/
 	#if ( ( portSTACK_GROWTH > 0 ) || ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
 		StackType_t		*pxEndOfStack;		/*< Points to the highest valid address for the stack. */
 	#endif
@@ -355,10 +357,11 @@ xDelayedTaskList1 and xDelayedTaskList2 could be move to function scople but
 doing so breaks some kernel aware debuggers and debuggers that rely on removing
 the static qualifier. */
 /*EDF*/
+/**********************************EDF Step 1************************************************/
 #if ( configUSE_EDF_SCHEDULER == 1 )
  PRIVILEGED_DATA static List_t xReadyTasksListEDF; /*< Ready tasks ordered by their deadline. */
  #endif
-
+/***************************************************************************************/
 PRIVILEGED_DATA static List_t pxReadyTasksLists[ configMAX_PRIORITIES ];/*< Prioritised ready tasks. */
 PRIVILEGED_DATA static List_t xDelayedTaskList1;						/*< Delayed tasks. */
 PRIVILEGED_DATA static List_t xDelayedTaskList2;						/*< Delayed tasks (two lists are used - one for delays that have overflowed the current tick count. */
@@ -749,7 +752,7 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB ) PRIVILEGED_FUNCTION;
 
 #endif /* portUSING_MPU_WRAPPERS */
 /*-----------------------------------------------------------*/
-
+/****************************************************EDF Step 5**********************************************************/
 #if( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
 /*EDF*/
 #if ( configUSE_EDF_SCHEDULER == 1 )
@@ -859,7 +862,7 @@ BaseType_t  xTaskPeriodicCreate(	TaskFunction_t pxTaskCode,
 
 		return xReturn;
 	}
-
+/**************************************************************************************************************************************/
 #endif /* configSUPPORT_DYNAMIC_ALLOCATION */
 /*-----------------------------------------------------------*/
 
@@ -2046,6 +2049,7 @@ BaseType_t xReturn;
 		}
 	}
 	#else
+	/*****************************************************EDF Step 6*****************************************************/
 	#if (configUSE_EDF_SCHEDULER == 1)
  
  TickType_t initIDLEPeriod = 200;
@@ -2066,6 +2070,7 @@ BaseType_t xReturn;
 								portPRIVILEGE_BIT, /* In effect ( tskIDLE_PRIORITY | portPRIVILEGE_BIT ), but tskIDLE_PRIORITY is zero. */
 								&xIdleTaskHandle ); /*lint !e961 MISRA exception, justified as it is not a redundant explicit cast to all supported compilers. */
 	#endif
+/******************************************************************************************************************************/
 	#endif /* configSUPPORT_STATIC_ALLOCATION */
 
 	#if ( configUSE_TIMERS == 1 )
@@ -2844,13 +2849,14 @@ BaseType_t xSwitchRequired = pdFALSE;
 					{
 						mtCOVERAGE_TEST_MARKER();
 					}
+					/*********************************************EDF Step 9*****************************************************/
 					
 					#if ( configUSE_EDF_SCHEDULER == 1 )
           listSET_LIST_ITEM_VALUE( &( ( pxTCB )->xStateListItem  ), ( pxTCB)->xTaskPeriod + xTickCount);
 					
 					//listSET_LIST_ITEM_VALUE( &( ( xIdleTaskHandle )->xStateListItem  ), ( xIdleTaskHandle)->xTaskPeriod + xTickCount);
 					#endif
-					
+					/******************************************************************************************************************/
 					/* Place the unblocked task into the appropriate ready
 					list. */
 					prvAddTaskToReadyList( pxTCB );
@@ -2859,15 +2865,17 @@ BaseType_t xSwitchRequired = pdFALSE;
 					context switch if preemption is turned off. */
 					#if (  configUSE_PREEMPTION == 1 )
 					{
+						/************************************************EDF Step 10*************************************************************/
 						#if ( configUSE_EDF_SCHEDULER == 1 )
-						if( pxTCB->xTaskPeriod  <= pxCurrentTCB->xTaskPeriod)
-						{
-							xSwitchRequired = pdTRUE;
-						}
-						else
-						{
-							mtCOVERAGE_TEST_MARKER();
-						}
+										if (listGET_LIST_ITEM_VALUE(&((pxTCB)->xStateListItem)) <= listGET_LIST_ITEM_VALUE(&((pxCurrentTCB)->xStateListItem)))
+                    {
+
+                        xSwitchRequired = pdTRUE;
+                    }
+                    else
+                    {
+                        mtCOVERAGE_TEST_MARKER();
+                    }
 						#else
 						/* Preemption is on, but a context switch should
 						only be performed if the unblocked task has a
@@ -2882,6 +2890,7 @@ BaseType_t xSwitchRequired = pdFALSE;
 							mtCOVERAGE_TEST_MARKER();
 						}
 						#endif/*configUSE_EDF_SCHEDULER*/
+						/**********************************************************************************************************************/
 					}
 					#endif /* configUSE_PREEMPTION */
 				}
@@ -3113,6 +3122,7 @@ void vTaskSwitchContext( void )
 		#endif
 /*EDF*/
 /* E.C. : */
+		/***********************************************EDF Step 7****************************************************/
 			 #if (configUSE_EDF_SCHEDULER == 0)
 			 {
 			/* Select a new task to run using either the generic C or portoptimised asm code. */
@@ -3124,6 +3134,7 @@ void vTaskSwitchContext( void )
 			 pxCurrentTCB = (TCB_t * ) listGET_OWNER_OF_HEAD_ENTRY( &(xReadyTasksListEDF ) );
 			}
 			 #endif
+			/**************************************************************************************************/
 		traceTASK_SWITCHED_IN();
 		
 
@@ -3506,6 +3517,7 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
 
 		#if ( ( configUSE_PREEMPTION == 1 ) && ( configIDLE_SHOULD_YIELD == 1 ) )
 		{
+			/*******************************************EDF Step 11*****************************************************************/
 			#if ( configUSE_EDF_SCHEDULER == 0 )
 			{
 				/* When using preemption tasks of equal priority will be
@@ -3535,7 +3547,7 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
 			#endif
 		}
 		#endif /* ( ( configUSE_PREEMPTION == 1 ) && ( configIDLE_SHOULD_YIELD == 1 ) ) */
-
+/**************************************************************************************************************************************************/
 		#if ( configUSE_IDLE_HOOK == 1 )
 		{
 			extern void vApplicationIdleHook( void );
@@ -3725,11 +3737,13 @@ UBaseType_t uxPriority;
 	}
 	#endif /* INCLUDE_vTaskSuspend */
 	/*EDF*/
+	/******************************EDF Step2**********************************************/
 	#if ( configUSE_EDF_SCHEDULER == 1 )
  {
  vListInitialise( &xReadyTasksListEDF );
  }
  #endif
+ /*****************************************************************************/
 
 	/* Start with pxDelayedTaskList using list1 and the pxOverflowDelayedTaskList
 	using list2. */

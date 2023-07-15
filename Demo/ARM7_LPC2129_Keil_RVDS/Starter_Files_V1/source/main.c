@@ -1,3 +1,5 @@
+/*************************************************Starts Of Main.c*************************************************************/
+
 /*
  * FreeRTOS Kernel V10.2.0
  * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
@@ -275,7 +277,7 @@ void Uart_Receiver (void * pvParameters)
 	for( ;; )
 	{	
 		/* Task Code*/
-		if (xQueueReceive(gl_queue_handle,&lc_ptr_ch_receive_string,0) == pdPASS )
+		if (xQueueReceive(gl_queue_handle,&lc_ptr_ch_receive_string,ZERO_INIT) == pdPASS )
 		{
 		vSerialPutString((const signed char*)lc_ptr_ch_receive_string,STRING_SIZE);
 		}	
@@ -504,4 +506,4 @@ static void prvSetupHardware( void )
 }
 /*-----------------------------------------------------------*/
 
-
+/*****************************************************End Of Main.c*****************************************************************/
