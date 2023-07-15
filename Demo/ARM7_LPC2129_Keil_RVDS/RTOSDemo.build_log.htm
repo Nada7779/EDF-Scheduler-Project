@@ -1,0 +1,78 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.29.0.0
+Copyright (C) 2019 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Mohammed Hejazy, Sprints, LIC=----
+ 
+Tool Versions:
+Toolchain:       MDK-Lite  Version: 5.29.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 6 (build 750)
+Assembler:       Armasm.exe V5.06 update 6 (build 750)
+Linker/Locator:  ArmLink.exe V5.06 update 6 (build 750)
+Library Manager: ArmAr.exe V5.06 update 6 (build 750)
+Hex Converter:   FromElf.exe V5.06 update 6 (build 750)
+CPU DLL:         SARM.DLL V5.29.0.0
+Dialog DLL:      DARMP.DLL V1.53.0.0
+Target DLL:      UL2ARM.DLL V1.74.10.0
+Dialog DLL:      TARMP.DLL V1.53.0.0
+ 
+<h2>Project:</h2>
+C:\New folder\Sprint-bootcamp\RTOS\EDF_S_PROJ\Graduation_Project\Demo\ARM7_LPC2129_Keil_RVDS\RTOSDemo.uvproj
+Project File Date:  07/15/2023
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Rebuild target 'RTOSDemo_ARM'
+compiling main.c...
+.\FreeRTOSConfig.h(34): error:  #5: cannot open source input file "GPIO.h": No such file or directory
+  #include "GPIO.h"
+Starter_Files_V1\source\main.c: 0 warnings, 1 error
+assembling serialISR.s...
+compiling serial.c...
+.\FreeRTOSConfig.h(34): error:  #5: cannot open source input file "GPIO.h": No such file or directory
+  #include "GPIO.h"
+Starter_Files_V1\source\serial.c: 0 warnings, 1 error
+compiling GPIO.c...
+Starter_Files_V1\source\GPIO.c(4): error:  #5: cannot open source input file "bit_math.h": No such file or directory
+  #include "bit_math.h"
+Starter_Files_V1\source\GPIO.c: 0 warnings, 1 error
+compiling GPIO_cfg.c...
+Starter_Files_V1\source\GPIO_cfg.c(2): error:  #5: cannot open source input file "GPIO.h": No such file or directory
+  #include "GPIO.h"
+Starter_Files_V1\source\GPIO_cfg.c: 0 warnings, 1 error
+assembling Startup.s...
+compiling ParTest.c...
+.\FreeRTOSConfig.h(34): error:  #5: cannot open source input file "GPIO.h": No such file or directory
+  #include "GPIO.h"
+ParTest\ParTest.c: 0 warnings, 1 error
+compiling tasks.c...
+.\FreeRTOSConfig.h(34): error:  #5: cannot open source input file "GPIO.h": No such file or directory
+  #include "GPIO.h"
+..\..\Source\tasks.c: 0 warnings, 1 error
+assembling portASM.s...
+compiling list.c...
+.\FreeRTOSConfig.h(34): error:  #5: cannot open source input file "GPIO.h": No such file or directory
+  #include "GPIO.h"
+..\..\Source\list.c: 0 warnings, 1 error
+compiling queue.c...
+.\FreeRTOSConfig.h(34): error:  #5: cannot open source input file "GPIO.h": No such file or directory
+  #include "GPIO.h"
+..\..\Source\queue.c: 0 warnings, 1 error
+compiling port.c...
+.\FreeRTOSConfig.h(34): error:  #5: cannot open source input file "GPIO.h": No such file or directory
+  #include "GPIO.h"
+..\..\Source\portable\RVDS\ARM7_LPC21xx\port.c: 0 warnings, 1 error
+compiling heap_2.c...
+.\FreeRTOSConfig.h(34): error:  #5: cannot open source input file "GPIO.h": No such file or directory
+  #include "GPIO.h"
+..\..\Source\portable\MemMang\heap_2.c: 0 warnings, 1 error
+".\RTOSDemo.axf" - 10 Error(s), 0 Warning(s).
+Target not created.
+Build Time Elapsed:  00:00:00
+</pre>
+</body>
+</html>
