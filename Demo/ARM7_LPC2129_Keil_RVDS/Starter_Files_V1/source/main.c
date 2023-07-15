@@ -1,5 +1,3 @@
-/*************************************************Starts Of Main.c*************************************************************/
-
 /*
  * FreeRTOS Kernel V10.2.0
  * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
@@ -80,6 +78,37 @@
 /* Constants for the ComTest demo application tasks. */
 #define mainCOM_TEST_BAUD_RATE	( ( unsigned long ) 115200 )
 	
+/* Tasks Hnadlers*/
+TaskHandle_t Button_1_Monitor_Handler = NULL; 
+TaskHandle_t Button_2_Monitor_Handler = NULL; 
+TaskHandle_t Periodic_Transmitter_Handler = NULL;
+TaskHandle_t Uart_Receiver_Handler = NULL;
+TaskHandle_t Load_1_Simulation_Handler = NULL;
+TaskHandle_t Load_2_Simulation_Handler = NULL;
+
+#define BTN1_PRIODICITY     50
+#define BTN2_PRIODICITY     50
+#define TR_PRIODICITY       100
+#define UART_PRIODICITY     20  
+#define LOAD1_PRIODICITY    10  
+#define LOAD2_PRIODICITY    100
+
+#define ENABLE_DEPUG_FEATURE  	1
+
+#define DISABLE_DEPUG_FEATURE		0
+
+#define PRINT_TASK_STATUS_SUMMERY  ENABLE_DEPUG_FEATURE
+
+
+/* Semaphore object */
+SemaphoreHandle_t button_released;
+
+/* Queue object */
+xQueueHandle gl_queue_handle;
+
+// changes
+
+
 /*
  * Configure the processor for use with the Keil demo board.  This is very
  * minimal as most of the setup is managed by the settings in the project
@@ -87,7 +116,9 @@
  */
 static void prvSetupHardware( void );
 /*-----------------------------------------------------------*/
-
+ /* Global Variables */
+ uint8_t string_size;
+ 
  /* PRE_DEFINES */
 #define QUEUE_MAX           10
 #define CONSUMER_DELAY      10
@@ -96,72 +127,47 @@ static void prvSetupHardware( void );
 #define READ_BUTTON_DELAY   10
 #define PRESSED             1
 #define RELEASED            0
-#define  BUTTON_1_PORT      PORT_0
-#define  BUTTON_2_PORT      PORT_0
-#define  BUTTON_1_PIN       PIN0
-#define  BUTTON_2_PIN       PIN1
-#define  ZERO_INIT          0
-#define  ONE_INIT           1
-#define  PERCENTAGE         100
-#define  LOAD_1_LOOP        37500
-#define  LOAD_2_LOOP        90000
-/* Tasks Periodicity */
+#define  BUTTON_1_PORT  PORT_0
+#define  BUTTON_2_PORT  PORT_0
+#define  BUTTON_1_PIN   PIN0
+#define  BUTTON_2_PIN   PIN1
+
 #define BTN1_PRIODICITY     50
 #define BTN2_PRIODICITY     50
 #define TR_PRIODICITY       100
 #define UART_PRIODICITY     20  
 #define LOAD1_PRIODICITY    10  
 #define LOAD2_PRIODICITY    100
-#define TASKS_PRIORITY      2
+
+
 
 /* Tasks Tags */
-#define BTN1_TAG    PIN2
-#define BTN2_TAG    PIN3
-#define TR_TAG      PIN4
-#define UART_TAG    PIN5 
-#define LOAD1_TAG   PIN6 
+#define BTN1_TAG    PIN4
+#define BTN2_TAG    PIN5
+#define TR_TAG      PIN6
+#define UART_TAG    PIN3  
+#define LOAD1_TAG   PIN2  
 #define LOAD2_TAG   PIN7
 #define TICK_TAG    PIN8
 #define IDLE_TAG    PIN9
-#define TICK_TAG_PORT  PORT_0
-
-/* Timer Macros */
-#define TIMER_RS_ADD 0x2
-#define T1PR_CONFIG 1000
-#define T1TCR_CONFIG_ADD 0x1
-
-/* Run-Time stats pre-defines */
-#define ENABLE_DEPUG_FEATURE  	1
-#define DISABLE_DEPUG_FEATURE		0
-#define Buffer_Size		          150
-#define PRINT_TASK_STATUS_SUMMERY  DISABLE_DEPUG_FEATURE
-
-/* Tasks Handlers*/
-TaskHandle_t Button_1_Monitor_Handler = NULL; 
-TaskHandle_t Button_2_Monitor_Handler = NULL; 
-TaskHandle_t Periodic_Transmitter_Handler = NULL;
-TaskHandle_t Uart_Receiver_Handler = NULL;
-TaskHandle_t Load_1_Simulation_Handler = NULL;
-TaskHandle_t Load_2_Simulation_Handler = NULL;
-
-/* Queue object */
-xQueueHandle gl_queue_handle;
-
-/* Global Variables */
-/* Run-Time stats varibales */
-uint32_t gl_u32_T1_In_Time , gl_u32_T1_Out_Time , gl_u32_T1_Total_Time ,gl_u32_T1_Execution_Time;
-uint32_t gl_u32_T2_In_Time , gl_u32_T2_Out_Time , gl_u32_T2_Total_Time ,gl_u32_T2_Execution_Time;
-uint32_t gl_u32_T3_In_Time , gl_u32_T3_Out_Time , gl_u32_T3_Total_Time ,gl_u32_T3_Execution_Time;
-uint32_t gl_u32_T4_In_Time , gl_u32_T4_Out_Time , gl_u32_T4_Total_Time ,gl_u32_T4_Execution_Time;
-uint32_t gl_u32_T5_In_Time , gl_u32_T5_Out_Time , gl_u32_T5_Total_Time ,gl_u32_T5_Execution_Time;
-uint32_t gl_u32_T6_In_Time , gl_u32_T6_Out_Time , gl_u32_T6_Total_Time ,gl_u32_T6_Execution_Time;
-uint32_t gl_u32_currentTickSystem = ZERO_INIT ;
-uint32_t gl_u32_CPU_LOAD = ZERO_INIT ;
-
-uint8_t gl_ch_buffer[Buffer_Size]={ZERO_INIT};
-/**********************************************/
+#define Buffer_Size		150
 
 /* TaskS to be created */
+
+
+
+/***********************************************/
+ int T1_In_Time , T1_Out_Time , T1_Total_Time ,T1_Execution_Time;
+ int T2_In_Time , T2_Out_Time , T2_Total_Time ,T2_Execution_Time;
+ int T3_In_Time , T3_Out_Time , T3_Total_Time ,T3_Execution_Time;
+ int T4_In_Time , T4_Out_Time , T4_Total_Time ,T4_Execution_Time;
+ int T5_In_Time , T5_Out_Time , T5_Total_Time ,T5_Execution_Time;
+ int T6_In_Time , T6_Out_Time , T6_Total_Time ,T6_Execution_Time;
+int currentTickSystem = 0 ;
+int CPU_LOAD = 0 ;
+
+char chArr_g_buffer[Buffer_Size]={0};
+/**********************************************/
 
 /* BUTTON_1_TASK  to detect the button 1 on (port 0 pin0) rising and falling edges  Every edge is an event that will be sent to a consumer_task */
 void Button_1_Monitor (void * pvParameters)
@@ -169,7 +175,8 @@ void Button_1_Monitor (void * pvParameters)
 	/* local variables */
 
 	uint8_t lc_u8_button_pressed=RELEASED;
-  pinState_t lc_u8_button_state;
+
+	pinState_t lc_u8_button_state;
 	
 	const char* lc_ptr_ch_button_1_rising= "Button_1_RISING \n";
 	const char* lc_ptr_ch_button_1_falling= "Button_1_FALLING\n";
@@ -196,33 +203,43 @@ void Button_1_Monitor (void * pvParameters)
 				{
 					xQueueSend(gl_queue_handle,&lc_ptr_ch_button_1_falling,portMAX_DELAY);
 					
-          lc_u8_button_pressed=RELEASED;
+           lc_u8_button_pressed=RELEASED;
 				}	
+				
+		
+
 				vTaskDelayUntil(&xLastWakeTime, xFrequency);
+				
+
 	}
 }
-
 /* BUTTON_2_TASK  to detect the button 1 on (port 0 pin1) rising and falling edges  Every edge is an event that will be sent to a consumer_task */
 void Button_2_Monitor (void * pvParameters)
 {
-	/* local variables */
 	
+	
+	/* local variables */
 	uint8_t lc_u8_button_pressed=RELEASED;
+
 	pinState_t lc_u8_button_state;
 	
 	const char* lc_ptr_ch_button_1_rising= "Button_2_RISING \n";
 	const char* lc_ptr_ch_button_1_falling= "Button_2_FALLING\n";
 	
-	TickType_t xLastWakeTime;
+		TickType_t xLastWakeTime;
 	const TickType_t xFrequency = BTN2_PRIODICITY;
-	vTaskSetApplicationTaskTag( NULL, (void*) BTN2_TAG);
+		vTaskSetApplicationTaskTag( NULL, (void*) BTN2_TAG);
 
 	
- /* init the xLastWakeTime with the current time */
+	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
+	
+	
 	for( ;; )
-	{		
-    /* Task Code*/
+	{
+		
+		
+/* Task Code*/
 		lc_u8_button_state= GPIO_read(BUTTON_2_PORT, BUTTON_2_PIN);
 				if (lc_u8_button_state == PIN_IS_HIGH && lc_u8_button_pressed==RELEASED )
 				{ 
@@ -239,140 +256,155 @@ void Button_2_Monitor (void * pvParameters)
 					vTaskDelayUntil(&xLastWakeTime, xFrequency);
 	}
 }
-
 /* This task will send a periodic string  every 100ms to the consumer task */
 void Periodic_Transmitter (void * pvParameters)
 {	
-	/* local variables */
-	const char* lc_ptr_ch_send_string= "periodic string \n";
+	
+		const char* lc_ptr_ch_send_string= "periodic string \n";
 	
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = TR_PRIODICITY;
-	
 	vTaskSetApplicationTaskTag( NULL, (void*) TR_TAG);
+	
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
 	for( ;; )
 	{
-		/* Task Code*/
-    xQueueSend(gl_queue_handle,&lc_ptr_ch_send_string,portMAX_DELAY);
+	
+      xQueueSend(gl_queue_handle,&lc_ptr_ch_send_string,portMAX_DELAY);
 
+		//vTaskDelay(SEND_DELAY);
 		vTaskDelayUntil(&xLastWakeTime, xFrequency);
-	}	
+	}
+	
+	
+	
 }
-
 /* This task will send the strings recieved from buttons and send tasks to the uart */
 void Uart_Receiver (void * pvParameters)
 {	
-	/* local variables */
+	
 	const char* lc_ptr_ch_receive_string;
 			
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = UART_PRIODICITY;
+//	vTaskSetApplicationTaskTag( NULL, (void*) PIN7);
+	
 	vTaskSetApplicationTaskTag( NULL, (void*) UART_TAG);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
+	
+	
+	
+	/* init the xLastWakeTime with the current time */
+	xLastWakeTime = xTaskGetTickCount();
 	for( ;; )
-	{	
-		/* Task Code*/
-		if (xQueueReceive(gl_queue_handle,&lc_ptr_ch_receive_string,ZERO_INIT) == pdPASS )
+	{
+     //xQueueReceive(gl_queue_handle,&lc_ptr_ch_receive_string,0);
+		
+		if (xQueueReceive(gl_queue_handle,&lc_ptr_ch_receive_string,0) == pdPASS )
+
 		{
-		vSerialPutString((const signed char*)lc_ptr_ch_receive_string,STRING_SIZE);
-		}	
-		vTaskDelayUntil(&xLastWakeTime, xFrequency);
+		vSerialPutString((const signed char*)lc_ptr_ch_receive_string,STRING_SIZE);}
+		
+				vTaskDelayUntil(&xLastWakeTime, xFrequency);
+
 	}
 }
-
 /* this task to create empty loop that loops X times to be with Execution time= 5ms*/
 void Load_1_Simulation (void * pvParameters)
 {	
-	/* local variables */
 	
-	uint32_t gl_u32_counter= ZERO_INIT; 
+	 int i=0; 
+
+		TickType_t xLastWakeTime;
+	const TickType_t xFrequency = LOAD1_PRIODICITY;
+		vTaskSetApplicationTaskTag( NULL, (void*) LOAD1_TAG);
 	
-	TickType_t xLastWakeTime;
-  const TickType_t xFrequency = LOAD1_PRIODICITY;
 	
-	vTaskSetApplicationTaskTag( NULL, (void*) LOAD1_TAG);
 	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
 	for( ;; )
 	{  
-				/* Task Code*/
-		for (gl_u32_counter=ZERO_INIT;gl_u32_counter<LOAD_1_LOOP;gl_u32_counter++)
+		for (i=0;i<37500;i++)
 		{
 			;
 		}
+		
+
 			vTaskDelayUntil(&xLastWakeTime, xFrequency);
+
+		
+
 	}
 }
-
 /* this task to create empty loop that loops X times to be with Execution time= 12ms */
 void Load_2_Simulation (void * pvParameters)
 {	
-		/* local variables */
 	
-	uint32_t gl_u32_counter= ZERO_INIT; 
-	 
-	TickType_t xLastWakeTime;
+	 int i=0; 
+
+		TickType_t xLastWakeTime;
 	const TickType_t xFrequency = LOAD2_PRIODICITY;
 	
 	vTaskSetApplicationTaskTag( NULL, (void*) LOAD2_TAG);
 	
+	
+	
 	/* init the xLastWakeTime with the current time */
 	xLastWakeTime = xTaskGetTickCount();
-	
 	for( ;; )
-	{  
-		/* Task Code*/		
-		for (gl_u32_counter=ZERO_INIT;gl_u32_counter<LOAD_2_LOOP;gl_u32_counter++)
+	{   	
+  
+		for (i=0;i<90000;i++)
 		{
 			;
-		}	
-		/* CODE FOR RUN_TIME STATS */
+		}
 		
 		#if (PRINT_TASK_STATUS_SUMMERY==ENABLE_DEPUG_FEATURE)
 		
-  	vTaskGetRunTimeStats(gl_ch_buffer);
-	
-	  vSerialPutString((const signed char*)gl_ch_buffer,Buffer_Size);
-	
+  	vTaskGetRunTimeStats(chArr_g_buffer);
 	  xSerialPutChar('\n');
+	  vSerialPutString((const signed char*)chArr_g_buffer,150);
+	
+	 
 	#endif
 
-	vTaskDelayUntil(&xLastWakeTime, xFrequency);
+			vTaskDelayUntil(&xLastWakeTime, xFrequency);
 	}
 }
 
 /* Application tick hook callout */
 void vApplicationTickHook (void)
 {
-	GPIO_write(TICK_TAG_PORT,TICK_TAG,PIN_IS_HIGH);
-	GPIO_write(TICK_TAG_PORT,TICK_TAG,PIN_IS_LOW);
+
+	GPIO_write(PORT_0,TICK_TAG,PIN_IS_HIGH);
 	
-	gl_u32_currentTickSystem = T1TC ;
-	gl_u32_CPU_LOAD = (float)(gl_u32_T1_Total_Time+gl_u32_T2_Total_Time+gl_u32_T3_Total_Time +gl_u32_T4_Total_Time +gl_u32_T5_Total_Time +gl_u32_T6_Total_Time)/(float) gl_u32_currentTickSystem *PERCENTAGE;
+	GPIO_write(PORT_0,PIN8,PIN_IS_LOW);
+	currentTickSystem = T1TC ;
+	CPU_LOAD = (float)(T1_Total_Time+T2_Total_Time+T3_Total_Time +T4_Total_Time +T5_Total_Time +T6_Total_Time)/(float) currentTickSystem *100;
 }
 
 /* Application idle hook callout */
 void vApplicationIdleHook (void)
 {
-	static uint8_t S_U8_LV_TagInit=ZERO_INIT;
+	static uint8_t S_U8_LV_TagInit=0;
 	
-	if(S_U8_LV_TagInit	==	ZERO_INIT)
+	if(S_U8_LV_TagInit	==	0)
 	{
 		vTaskSetApplicationTaskTag( NULL, (void*) IDLE_TAG);
-		S_U8_LV_TagInit=ONE_INIT;
+		S_U8_LV_TagInit=1;
 	}
+
+
 	}
 	
 
 /*****************************************************************/
 
-/* Create task function for EDF scheduler */	
 extern BaseType_t  xTaskPeriodicCreate(	TaskFunction_t pxTaskCode,
 							const char * const pcName,		/*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 							const configSTACK_DEPTH_TYPE usStackDepth,
@@ -386,43 +418,44 @@ extern BaseType_t  xTaskPeriodicCreate(	TaskFunction_t pxTaskCode,
  */
 int main( void )
 {
-/* Setup the hardware for use with the Keil demo board. */
-prvSetupHardware();
-			
-/* Create queue */	
-gl_queue_handle = xQueueCreate(QUEUE_MAX, sizeof(const char*));
+	/* Setup the hardware for use with the Keil demo board. */
+	prvSetupHardware();
+		/* Create queue */
 
-/* Create Tasks here */
+	
+		gl_queue_handle = xQueueCreate(QUEUE_MAX, sizeof(const char*));
 
-/* create Load_2_Simulation */  
+
+	    /* Create Tasks here */
+
+/* create Button_1_Monitor */
 		xTaskPeriodicCreate(
                Load_2_Simulation,                 /* function that implements the task */
 	             "Load_2_Simulation",                /* task's name */
 	             configMINIMAL_STACK_SIZE, 						/* stack size in words */
 	             (void *) NULL,          							 /* parameter passed to the task */
-		           TASKS_PRIORITY,                      							/* task's priority */
+		           2,                      							/* task's priority */
 		           &Load_2_Simulation_Handler,   				 /* task's handler */
-							 LOAD2_PRIODICITY                    							  /*used to pass task periodicity */
+							 100                    							  /*used to pass task periodicity */
 );
-/* create Load_1_Simulation */  
+																										/* create Load_1_Simulation */  
 	xTaskPeriodicCreate(
                Load_1_Simulation,                 /* function that implements the task */
 	             "Load_1_Simulation",                /* task's name */
 	             configMINIMAL_STACK_SIZE, /* stack size in words */
 	             (void *) NULL,           /* parameter passed to the task */
-		           TASKS_PRIORITY,                      /* task's priority */
+		           2,                      /* task's priority */
 		           &Load_1_Simulation_Handler,    /* task's handler */
-							 LOAD1_PRIODICITY                      /*used to pass task periodicity */
+							 10                      /*used to pass task periodicity */
 );
-/* create Button_1_Monitor */
 	xTaskPeriodicCreate(
                Button_1_Monitor,                 /* function that implements the task */
 	             "Button_1_Monitor",                /* task's name */
 	             configMINIMAL_STACK_SIZE, /* stack size in words */
 	             (void *) NULL,           /* parameter passed to the task */
-		           TASKS_PRIORITY,                      /* task's priority */
+		           2,                      /* task's priority */
 		           &Button_1_Monitor_Handler, /* task's handler */
-							 BTN1_PRIODICITY                      /*used to pass task periodicity */
+							 50                      /*used to pass task periodicity */
 );
 /* create Button_2_Monitor */
 	xTaskPeriodicCreate(
@@ -430,9 +463,9 @@ gl_queue_handle = xQueueCreate(QUEUE_MAX, sizeof(const char*));
 	             "Button_2_Monitor",                /* task's name */
 	             configMINIMAL_STACK_SIZE, /* stack size in words */
 	             (void *) NULL,           /* parameter passed to the task */
-		           TASKS_PRIORITY,                      /* task's priority */
+		           2,                      /* task's priority */
 		           &Button_2_Monitor_Handler,    /* task's handler */
-							 BTN2_PRIODICITY                      /*used to pass task periodicity */
+							 50                      /*used to pass task periodicity */
 );
 
 /* create Uart_Receiver */  
@@ -441,20 +474,23 @@ gl_queue_handle = xQueueCreate(QUEUE_MAX, sizeof(const char*));
 	             "Uart_Receiver",                /* task's name */
 	             configMINIMAL_STACK_SIZE, /* stack size in words */
 	             (void *) NULL,           /* parameter passed to the task */
-		           TASKS_PRIORITY,                      /* task's priority */
+		           2,                      /* task's priority */
 		           &Uart_Receiver_Handler,    /* task's handler */
-							 UART_PRIODICITY                     /*used to pass task periodicity */
+							 20                     /*used to pass task periodicity */
 );
-/* create Periodic_Transmitter */
+	/* create Periodic_Transmitter */
 	xTaskPeriodicCreate(
                Periodic_Transmitter,                 /* function that implements the task */
 	             "Periodic_Transmitter",                /* task's name */
 	             configMINIMAL_STACK_SIZE, /* stack size in words */
 	             (void *) NULL,           /* parameter passed to the task */
-		           TASKS_PRIORITY,                      /* task's priority */
+		           2,                      /* task's priority */
 		           &Periodic_Transmitter_Handler,    /* task's handler */
-							 TR_PRIODICITY                     /*used to pass task periodicity */
+							  100                     /*used to pass task periodicity */
 );
+
+							 /* create Load_2_Simulation */  
+
 			
 	/* Now all the tasks have been started - start the scheduler.
 
@@ -475,16 +511,15 @@ gl_queue_handle = xQueueCreate(QUEUE_MAX, sizeof(const char*));
 /* Function to reset timer 1 */
 void timer1Reset(void)
 {
-	T1TCR |= TIMER_RS_ADD;
-	T1TCR &= ~TIMER_RS_ADD;
+	T1TCR |= 0x2;
+	T1TCR &= ~0x2;
 }
-
 
 /* Function to initialize and start timer 1 */
 static void configTimer1(void)
 {
-	T1PR = T1PR_CONFIG;
-	T1TCR |= T1TCR_CONFIG_ADD;
+	T1PR = 1000;
+	T1TCR |= 0x1;
 }
 
 static void prvSetupHardware( void )
@@ -506,4 +541,4 @@ static void prvSetupHardware( void )
 }
 /*-----------------------------------------------------------*/
 
-/*****************************************************End Of Main.c*****************************************************************/
+
